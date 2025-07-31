@@ -6,14 +6,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { SpeciesSelector } from "@/components/SpeciesSelector";
 import { EmergencyMode } from "@/components/EmergencyMode";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart } from "lucide-react";
+import { VoiceInput } from "@/components/VoiceInput";
+import { PhotoAnalysis } from "@/components/PhotoAnalysis";
+import { CommunityAgentMode } from "@/components/CommunityAgentMode";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const Index = () => {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent'>('welcome');
+  const [showAiFeatures, setShowAiFeatures] = useState(false);
 
   const handleStartDiagnosis = () => {
     setCurrentStep('species');
@@ -25,6 +29,15 @@ const Index = () => {
   };
 
   const handleSymptomsSubmit = () => {
+    setCurrentStep('diagnosis');
+  };
+
+  const handleVoiceTranscription = (text: string) => {
+    setSymptoms(text);
+  };
+
+  const handlePhotoAnalysis = (analysis: string) => {
+    setSymptoms(analysis);
     setCurrentStep('diagnosis');
   };
 
@@ -41,18 +54,18 @@ const Index = () => {
     },
     {
       icon: <Camera className="w-6 h-6" />,
-      title: "Photo Analysis",
+      title: "Photo Analysis", 
       description: "Analyze wounds, infections, and physical conditions through photos"
     },
     {
-      icon: <MessageSquare className="w-6 h-6" />,
-      title: "Multi-Language",
-      description: "Supports local languages and dialects for better accessibility"
+      icon: <Mic className="w-6 h-6" />,
+      title: "Voice Assistant",
+      description: "Speak in Swahili or English - perfect for farmers who can't read"
     },
     {
-      icon: <MapPin className="w-6 h-6" />,
-      title: "Case Tracking",
-      description: "Track animal health records and disease patterns locally"
+      icon: <Users className="w-6 h-6" />,
+      title: "Community Agent",
+      description: "Shared device mode for community health workers serving multiple farmers"
     },
     {
       icon: <Heart className="w-6 h-6" />,
@@ -101,11 +114,23 @@ const Index = () => {
             veterinary assistance that works completely offline. No internet required, no animal left behind.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button variant="secondary">Learn More</Button>
-            <Button variant="outline">Community Guide</Button>
+            <Button variant="secondary" onClick={() => setShowAiFeatures(!showAiFeatures)}>
+              {showAiFeatures ? 'Hide' : 'Show'} AI Features
+            </Button>
+            <Button variant="outline" onClick={() => setCurrentStep('agent')}>
+              Community Agent Mode
+            </Button>
           </div>
         </div>
       </Card>
+
+      {/* AI Features Section */}
+      {showAiFeatures && (
+        <div className="grid md:grid-cols-2 gap-6 animate-fade-in-up">
+          <VoiceInput onTranscription={handleVoiceTranscription} />
+          <PhotoAnalysis onAnalysisComplete={handlePhotoAnalysis} />
+        </div>
+      )}
     </div>
   );
 
@@ -135,6 +160,9 @@ const Index = () => {
 
       <Card className="p-6">
         <div className="space-y-4">
+          {/* Voice Input for Symptoms */}
+          <VoiceInput onTranscription={handleVoiceTranscription} />
+          
           <div>
             <label className="block text-sm font-medium mb-2">Animal's Current Condition</label>
             <Textarea
@@ -223,6 +251,17 @@ const Index = () => {
     </div>
   );
 
+  const renderAgentMode = () => (
+    <div className="animate-fade-in-up">
+      <CommunityAgentMode />
+      <div className="flex justify-center mt-6">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Rudi Nyumbani
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <OfflineIndicator />
@@ -236,6 +275,7 @@ const Index = () => {
         {currentStep === 'species' && renderSpeciesSelection()}
         {currentStep === 'symptoms' && renderSymptomsInput()}
         {currentStep === 'diagnosis' && renderDiagnosis()}
+        {currentStep === 'agent' && renderAgentMode()}
       </div>
     </div>
   );
