@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,15 +10,36 @@ import { EmergencyMode } from "@/components/EmergencyMode";
 import { VoiceInput } from "@/components/VoiceInput";
 import { PhotoAnalysis } from "@/components/PhotoAnalysis";
 import { CommunityAgentMode } from "@/components/CommunityAgentMode";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const Index = () => {
+  const { user, signOut, loading } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
   const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleStartDiagnosis = () => {
     setCurrentStep('species');
@@ -265,6 +287,42 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <OfflineIndicator />
+      
+      {/* Header with Authentication */}
+      <header className="border-b border-border bg-card/50 backdrop-blur">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Stethoscope className="h-6 w-6 text-primary" />
+              <span className="font-bold text-lg">Vetix AI</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              {loading ? (
+                <div className="h-9 w-20 bg-muted animate-pulse rounded" />
+              ) : user ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="h-4 w-4" />
+                    <span>{user.email}</span>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Toka
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm">
+                    <LogIn className="h-4 w-4 mr-1" />
+                    Ingia
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
