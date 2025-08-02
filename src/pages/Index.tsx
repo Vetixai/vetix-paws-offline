@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
@@ -10,9 +12,13 @@ import { EmergencyMode } from "@/components/EmergencyMode";
 import { VoiceInput } from "@/components/VoiceInput";
 import { PhotoAnalysis } from "@/components/PhotoAnalysis";
 import { CommunityAgentMode } from "@/components/CommunityAgentMode";
+import { AIChatAssistant } from "@/components/AIChatAssistant";
+import { SmartDiagnosis } from "@/components/SmartDiagnosis";
+import { VoiceToTextAI } from "@/components/VoiceToTextAI";
+import { ImageGenerationAI } from "@/components/ImageGenerationAI";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User } from "lucide-react";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const Index = () => {
@@ -148,10 +154,37 @@ const Index = () => {
 
       {/* AI Features Section */}
       {showAiFeatures && (
-        <div className="grid md:grid-cols-2 gap-6 animate-fade-in-up">
-          <VoiceInput onTranscription={handleVoiceTranscription} />
-          <PhotoAnalysis onAnalysisComplete={handlePhotoAnalysis} />
-        </div>
+        <Card className="p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle>AI Features / Vipengele vya Akili</CardTitle>
+          </CardHeader>
+          <CardContent className="px-0">
+            <Tabs defaultValue="ai-chat" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
+                <TabsTrigger value="smart-diagnosis">Smart Diagnosis</TabsTrigger>
+                <TabsTrigger value="voice-ai">Voice AI</TabsTrigger>
+                <TabsTrigger value="image-gen">Image AI</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="ai-chat" className="space-y-4">
+                <AIChatAssistant />
+              </TabsContent>
+
+              <TabsContent value="smart-diagnosis" className="space-y-4">
+                <SmartDiagnosis />
+              </TabsContent>
+
+              <TabsContent value="voice-ai" className="space-y-4">
+                <VoiceToTextAI />
+              </TabsContent>
+
+              <TabsContent value="image-gen" className="space-y-4">
+                <ImageGenerationAI />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

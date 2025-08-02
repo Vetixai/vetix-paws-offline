@@ -19,11 +19,12 @@ const speciesOptions: SpeciesOption[] = [
 ];
 
 interface SpeciesSelectorProps {
-  onSelect: (species: string) => void;
+  onSelect?: (species: string) => void;
+  onSpeciesChange?: (species: string) => void;
   selectedSpecies?: string;
 }
 
-export const SpeciesSelector = ({ onSelect, selectedSpecies }: SpeciesSelectorProps) => {
+export const SpeciesSelector = ({ onSelect, onSpeciesChange, selectedSpecies }: SpeciesSelectorProps) => {
   const livestock = speciesOptions.filter(s => s.category === 'livestock');
   const pets = speciesOptions.filter(s => s.category === 'pets');
 
@@ -34,7 +35,10 @@ export const SpeciesSelector = ({ onSelect, selectedSpecies }: SpeciesSelectorPr
           ? 'ring-2 ring-primary bg-accent' 
           : 'hover:bg-accent/50'
       }`}
-      onClick={() => onSelect(species.id)}
+      onClick={() => {
+        onSelect?.(species.id);
+        onSpeciesChange?.(species.id);
+      }}
     >
       <div className="text-center">
         <div className="text-4xl mb-2">{species.icon}</div>
