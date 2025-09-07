@@ -16,8 +16,11 @@ import { AIChatAssistant } from "@/components/AIChatAssistant";
 import { SmartDiagnosis } from "@/components/SmartDiagnosis";
 import { VoiceToTextAI } from "@/components/VoiceToTextAI";
 import { ImageGenerationAI } from "@/components/ImageGenerationAI";
+import { SyncManager } from "@/components/SyncManager";
+import { LocalDiagnosisHistory } from "@/components/LocalDiagnosisHistory";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalSync } from "@/hooks/useLocalSync";
 import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
@@ -25,11 +28,13 @@ const Index = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { saveDiagnosisLocal, isOnline } = useLocalSync();
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
   const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
+  const [diagnosisResult, setDiagnosisResult] = useState<string>("");
 
   const handleSignOut = async () => {
     try {
@@ -56,7 +61,30 @@ const Index = () => {
     setCurrentStep('symptoms');
   };
 
-  const handleSymptomsSubmit = () => {
+  const handleSymptomsSubmit = async () => {
+    const mockDiagnosis = `Based on symptoms for ${selectedSpecies}: ${symptoms}. This appears to be a mild condition requiring monitoring.`;
+    setDiagnosisResult(mockDiagnosis);
+    
+    // Save to local storage
+    try {
+      await saveDiagnosisLocal({
+        species: selectedSpecies,
+        symptoms: symptoms,
+        diagnosis: mockDiagnosis
+      });
+      
+      toast({
+        title: isOnline ? "Diagnosis Saved" : "Saved Offline",
+        description: isOnline ? "Diagnosis saved to cloud" : "Diagnosis saved locally, will sync when online",
+      });
+    } catch (error) {
+      toast({
+        title: "Save Failed",
+        description: "Could not save diagnosis record",
+        variant: "destructive"
+      });
+    }
+    
     setCurrentStep('diagnosis');
   };
 
@@ -152,6 +180,9 @@ const Index = () => {
         </div>
       </Card>
 
+      {/* Sync Manager */}
+      <SyncManager />
+
       {/* AI Features Section */}
       {showAiFeatures && (
         <Card className="p-6">
@@ -160,11 +191,12 @@ const Index = () => {
           </CardHeader>
           <CardContent className="px-0">
             <Tabs defaultValue="ai-chat" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
                 <TabsTrigger value="smart-diagnosis">Smart Diagnosis</TabsTrigger>
                 <TabsTrigger value="voice-ai">Voice AI</TabsTrigger>
                 <TabsTrigger value="image-gen">Image AI</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
               </TabsList>
 
               <TabsContent value="ai-chat" className="space-y-4">
@@ -181,6 +213,10 @@ const Index = () => {
 
               <TabsContent value="image-gen" className="space-y-4">
                 <ImageGenerationAI />
+              </TabsContent>
+
+              <TabsContent value="history" className="space-y-4">
+                <LocalDiagnosisHistory />
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -274,6 +310,10 @@ const Index = () => {
           Based on the symptoms described, your animal may be experiencing mild digestive discomfort, 
           possibly due to dietary changes or minor stress.
         </p>
+
+        <div className="mb-4">
+          <p className="text-muted-foreground">{diagnosisResult}</p>
+        </div>
 
         <div className="space-y-4">
           <div>
