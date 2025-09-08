@@ -7,14 +7,135 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
-      [_ in never]: never
+      emergency_alerts: {
+        Row: {
+          animal_species: string | null
+          contact_id: string | null
+          id: string
+          location: string | null
+          response_notes: string | null
+          response_received: boolean | null
+          sent_at: string
+          status: string | null
+          symptoms: string | null
+          urgency_level: string | null
+          user_id: string | null
+        }
+        Insert: {
+          animal_species?: string | null
+          contact_id?: string | null
+          id?: string
+          location?: string | null
+          response_notes?: string | null
+          response_received?: boolean | null
+          sent_at?: string
+          status?: string | null
+          symptoms?: string | null
+          urgency_level?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          animal_species?: string | null
+          contact_id?: string | null
+          id?: string
+          location?: string | null
+          response_notes?: string | null
+          response_received?: boolean | null
+          sent_at?: string
+          status?: string | null
+          symptoms?: string | null
+          urgency_level?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_alerts_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          location: string | null
+          name: string
+          phone_number: string
+          priority: number | null
+          relationship: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          name: string
+          phone_number: string
+          priority?: number | null
+          relationship?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          name?: string
+          phone_number?: string
+          priority?: number | null
+          relationship?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          location: string | null
+          phone_number: string | null
+          updated_at: string
+          user_id: string
+          user_type: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          phone_number?: string | null
+          updated_at?: string
+          user_id: string
+          user_type?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          phone_number?: string | null
+          updated_at?: string
+          user_id?: string
+          user_type?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
