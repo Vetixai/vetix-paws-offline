@@ -18,13 +18,16 @@ import { VoiceToTextAI } from "@/components/VoiceToTextAI";
 import { ImageGenerationAI } from "@/components/ImageGenerationAI";
 import { SyncManager } from "@/components/SyncManager";
 import { LocalDiagnosisHistory } from "@/components/LocalDiagnosisHistory";
+import { LocalLanguageSupport, LanguageProvider } from "@/components/LocalLanguageSupport";
+import { PreventiveCareCalendar } from "@/components/PreventiveCareCalendar";
+import { EconomicImpactCalculator } from "@/components/EconomicImpactCalculator";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalSync } from "@/hooks/useLocalSync";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle } from "lucide-react";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
-const Index = () => {
+const IndexContent = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ const Index = () => {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string>("");
 
@@ -123,11 +126,21 @@ const Index = () => {
       title: "Community Agent",
       description: "Shared device mode for community health workers serving multiple farmers"
     },
-    {
-      icon: <Heart className="w-6 h-6" />,
-      title: "Emergency Care",
-      description: "Immediate emergency response instructions and protocols"
-    }
+      {
+        icon: <Heart className="w-6 h-6" />,
+        title: "Emergency Care",
+        description: "Immediate emergency response instructions and protocols"
+      },
+      {
+        icon: <TrendingUp className="w-6 h-6" />,
+        title: "Economic Impact",
+        description: "Calculate treatment costs vs benefits for informed decisions"
+      },
+      {
+        icon: <Calendar className="w-6 h-6" />,
+        title: "Preventive Schedule", 
+        description: "AI-powered vaccination and health calendars"
+      }
   ];
 
   const renderWelcomeScreen = () => (
@@ -176,9 +189,18 @@ const Index = () => {
             <Button variant="outline" onClick={() => setCurrentStep('agent')}>
               Community Agent Mode
             </Button>
+            <Button variant="outline" onClick={() => setCurrentStep('calendar')}>
+              Care Calendar
+            </Button>
+            <Button variant="outline" onClick={() => setCurrentStep('economics')}>
+              Economic Calculator
+            </Button>
           </div>
         </div>
       </Card>
+
+      {/* Language Support */}
+      <LocalLanguageSupport />
 
       {/* Sync Manager */}
       <SyncManager />
@@ -191,12 +213,14 @@ const Index = () => {
           </CardHeader>
           <CardContent className="px-0">
             <Tabs defaultValue="ai-chat" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
                 <TabsTrigger value="smart-diagnosis">Smart Diagnosis</TabsTrigger>
                 <TabsTrigger value="voice-ai">Voice AI</TabsTrigger>
                 <TabsTrigger value="image-gen">Image AI</TabsTrigger>
                 <TabsTrigger value="history">History</TabsTrigger>
+                <TabsTrigger value="calendar">Calendar</TabsTrigger>
+                <TabsTrigger value="economics">Economics</TabsTrigger>
               </TabsList>
 
               <TabsContent value="ai-chat" className="space-y-4">
@@ -217,6 +241,14 @@ const Index = () => {
 
               <TabsContent value="history" className="space-y-4">
                 <LocalDiagnosisHistory />
+              </TabsContent>
+
+              <TabsContent value="calendar" className="space-y-4">
+                <PreventiveCareCalendar />
+              </TabsContent>
+
+              <TabsContent value="economics" className="space-y-4">
+                <EconomicImpactCalculator />
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -357,6 +389,28 @@ const Index = () => {
     </div>
   );
 
+  const renderCalendar = () => (
+    <div className="animate-fade-in-up">
+      <PreventiveCareCalendar />
+      <div className="flex justify-center mt-6">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Back to Home
+        </Button>
+      </div>
+    </div>
+  );
+
+  const renderEconomics = () => (
+    <div className="animate-fade-in-up">
+      <EconomicImpactCalculator />
+      <div className="flex justify-center mt-6">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Back to Home
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <OfflineIndicator />
@@ -407,8 +461,18 @@ const Index = () => {
         {currentStep === 'symptoms' && renderSymptomsInput()}
         {currentStep === 'diagnosis' && renderDiagnosis()}
         {currentStep === 'agent' && renderAgentMode()}
+        {currentStep === 'calendar' && renderCalendar()}
+        {currentStep === 'economics' && renderEconomics()}
       </div>
     </div>
+  );
+};
+
+const Index = () => {
+  return (
+    <LanguageProvider>
+      <IndexContent />
+    </LanguageProvider>
   );
 };
 
