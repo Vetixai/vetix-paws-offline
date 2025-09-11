@@ -453,7 +453,7 @@ const IndexContent = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <EmergencyMode isEmergency={isEmergency} onToggle={() => setIsEmergency(!isEmergency)} />
+          <EmergencyMode />
         </div>
 
         {currentStep === 'welcome' && renderWelcomeScreen()}

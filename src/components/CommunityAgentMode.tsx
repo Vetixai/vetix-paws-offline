@@ -1,51 +1,170 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, MapPin, Phone, User, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Users, MessageCircle, Phone, MapPin, Star, Clock, Send, CheckCircle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
-interface CaseRecord {
+interface VetAgent {
   id: string;
-  farmerName: string;
+  name: string;
+  title: string;
   location: string;
+  distance: string;
+  rating: number;
+  totalCases: number;
+  specialties: string[];
+  availability: 'online' | 'busy' | 'offline';
+  responseTime: string;
+  avatar: string;
+  languages: string[];
+  cost: string;
+}
+
+interface CommunityPost {
+  id: string;
+  author: string;
+  avatar: string;
   animalType: string;
-  condition: string;
+  title: string;
+  description: string;
+  images: string[];
+  timestamp: string;
+  responses: number;
   urgency: 'low' | 'medium' | 'high';
-  status: 'pending' | 'completed' | 'followup';
-  date: string;
+  solved: boolean;
 }
 
 export const CommunityAgentMode = () => {
-  const [isAgentMode, setIsAgentMode] = useState(false);
-  const [agentName, setAgentName] = useState("");
-  const [currentLocation, setCurrentLocation] = useState("");
-  const [cases, setCases] = useState<CaseRecord[]>([
-    {
-      id: "001",
-      farmerName: "Mama Wanjiku",
-      location: "Kiambu",
-      animalType: "ng'ombe",
-      condition: "Haraka ya tumbo",
-      urgency: "medium",
-      status: "pending",
-      date: "2025-01-31"
-    },
-    {
-      id: "002", 
-      farmerName: "Mzee Kamau",
-      location: "Thika",
-      animalType: "mbwa",
-      condition: "Jeraha la mguu",
-      urgency: "high",
-      status: "completed",
-      date: "2025-01-30"
-    }
-  ]);
+  const [activeTab, setActiveTab] = useState<'agents' | 'community'>('agents');
+  const [availableAgents, setAvailableAgents] = useState<VetAgent[]>([]);
+  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
+  const [isLoadingAgents, setIsLoadingAgents] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<VetAgent | null>(null);
+  const [consultationMessage, setConsultationMessage] = useState("");
+  const [newPost, setNewPost] = useState({
+    title: "",
+    description: "",
+    animalType: "",
+    urgency: "medium" as 'low' | 'medium' | 'high'
+  });
+  const { toast } = useToast();
 
-  const startAgentMode = () => {
-    if (!agentName.trim()) return;
-    setIsAgentMode(true);
+  // Mock data for demonstration
+  useEffect(() => {
+    loadAvailableAgents();
+    loadCommunityPosts();
+  }, []);
+
+  const loadAvailableAgents = async () => {
+    setIsLoadingAgents(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const mockAgents: VetAgent[] = [
+      {
+        id: '1',
+        name: 'Dr. Sarah Mwangi',
+        title: 'Licensed Veterinarian',
+        location: 'Nairobi, Kenya',
+        distance: '2.1 km',
+        rating: 4.9,
+        totalCases: 1247,
+        specialties: ['Cattle', 'Goats', 'Emergency Care'],
+        availability: 'online',
+        responseTime: '< 5 min',
+        avatar: '/placeholder-vet1.jpg',
+        languages: ['English', 'Swahili', 'Kikuyu'],
+        cost: '300-500 KSH'
+      },
+      {
+        id: '2',
+        name: 'Dr. Joseph Kimani',
+        title: 'Community Veterinary Agent',
+        location: 'Kiambu, Kenya',
+        distance: '5.7 km',
+        rating: 4.7,
+        totalCases: 892,
+        specialties: ['Poultry', 'Sheep', 'Preventive Care'],
+        availability: 'online',
+        responseTime: '< 10 min',
+        avatar: '/placeholder-vet2.jpg',
+        languages: ['English', 'Swahili'],
+        cost: '200-400 KSH'
+      },
+      {
+        id: '3',
+        name: 'Agnes Wanjiku',
+        title: 'Certified Animal Health Technician',
+        location: 'Thika, Kenya',
+        distance: '12.3 km',
+        rating: 4.6,
+        totalCases: 654,
+        specialties: ['Basic Treatment', 'Vaccination', 'Health Monitoring'],
+        availability: 'busy',
+        responseTime: '< 30 min',
+        avatar: '/placeholder-vet3.jpg',
+        languages: ['Swahili', 'Kikuyu'],
+        cost: '150-300 KSH'
+      }
+    ];
+    
+    setAvailableAgents(mockAgents);
+    setIsLoadingAgents(false);
+  };
+
+  const loadCommunityPosts = async () => {
+    const mockPosts: CommunityPost[] = [
+      {
+        id: '1',
+        author: 'John Farmer',
+        avatar: '/placeholder-farmer1.jpg',
+        animalType: 'Cow',
+        title: 'My cow is not eating well for 2 days',
+        description: 'She seems lethargic and has reduced appetite. Temperature feels normal.',
+        images: [],
+        timestamp: '2 hours ago',
+        responses: 3,
+        urgency: 'medium',
+        solved: false
+      },
+      {
+        id: '2',
+        author: 'Mary Wanjira',
+        avatar: '/placeholder-farmer2.jpg',
+        animalType: 'Chicken',
+        title: 'Chickens showing respiratory symptoms',
+        description: 'Several chickens coughing and wheezing. Started yesterday.',
+        images: [],
+        timestamp: '5 hours ago',
+        responses: 7,
+        urgency: 'high',
+        solved: true
+      }
+    ];
+    
+    setCommunityPosts(mockPosts);
+  };
+
+  const getAvailabilityColor = (availability: string) => {
+    switch (availability) {
+      case 'online': return 'text-green-600';
+      case 'busy': return 'text-yellow-600';
+      case 'offline': return 'text-gray-400';
+      default: return 'text-gray-400';
+    }
+  };
+
+  const getAvailabilityBadge = (availability: string) => {
+    switch (availability) {
+      case 'online': return 'default';
+      case 'busy': return 'secondary';
+      case 'offline': return 'outline';
+      default: return 'outline';
+    }
   };
 
   const getUrgencyColor = (urgency: string) => {
@@ -57,146 +176,313 @@ export const CommunityAgentMode = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed': return <CheckCircle2 className="w-4 h-4 text-success" />;
-      case 'followup': return <Clock className="w-4 h-4 text-warning" />;
-      case 'pending': return <AlertCircle className="w-4 h-4 text-destructive" />;
-      default: return null;
-    }
+  const connectToAgent = (agent: VetAgent) => {
+    setSelectedAgent(agent);
+    toast({
+      title: "Connected to Agent",
+      description: `Starting consultation with ${agent.name}`,
+    });
   };
 
-  if (!isAgentMode) {
-    return (
-      <Card className="p-6 bg-accent/50">
-        <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <Users className="w-12 h-12 text-primary" />
-          </div>
-          <h3 className="text-xl font-semibold">Hali ya Afisa wa Jamii</h3>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            Ingia kama afisa wa afya ya wanyamapori wa kijamii ili kusaidia wakulima wengi katika eneo lako
-          </p>
-          
-          <div className="space-y-3 max-w-sm mx-auto">
-            <Input
-              placeholder="Jina lako (Mfano: Dkt. Sarah)"
-              value={agentName}
-              onChange={(e) => setAgentName(e.target.value)}
-            />
-            <Input
-              placeholder="Eneo (Mfano: Kiambu County)"
-              value={currentLocation}
-              onChange={(e) => setCurrentLocation(e.target.value)}
-            />
-            <Button 
-              onClick={startAgentMode}
-              disabled={!agentName.trim()}
-              className="w-full"
-            >
-              Anza Kazi ya Jamii
-            </Button>
-          </div>
+  const sendConsultationMessage = () => {
+    if (!consultationMessage.trim() || !selectedAgent) return;
+    
+    toast({
+      title: "Message Sent",
+      description: `Your consultation request has been sent to ${selectedAgent.name}`,
+    });
+    
+    setConsultationMessage("");
+    setSelectedAgent(null);
+  };
 
-          <div className="text-xs text-muted-foreground space-y-1">
-            <p>👩‍⚕️ Kwa afisa wa afya ya wanyamapori</p>
-            <p>📱 Tumia kifaa kimoja kusaidia wakulima wengi</p>
-            <p>📊 Fuatilia kesi na takwimu za eneo</p>
-          </div>
-        </div>
-      </Card>
-    );
-  }
+  const submitCommunityPost = () => {
+    if (!newPost.title.trim() || !newPost.description.trim()) {
+      toast({
+        title: "Incomplete Post",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    toast({
+      title: "Post Submitted",
+      description: "Your question has been posted to the community",
+    });
+    
+    setNewPost({ title: "", description: "", animalType: "", urgency: "medium" });
+  };
 
   return (
     <div className="space-y-6">
-      {/* Agent Header */}
-      <Card className="p-4 bg-primary/10 border-primary/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
-              <User className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold">{agentName}</h3>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {currentLocation}
+      {/* Tab Navigation */}
+      <div className="flex space-x-1 bg-muted p-1 rounded-lg">
+        <button
+          onClick={() => setActiveTab('agents')}
+          className={`flex-1 px-4 py-2 rounded-md transition-all ${
+            activeTab === 'agents' 
+              ? 'bg-background shadow-sm text-foreground' 
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Users className="w-4 h-4 inline mr-2" />
+          Veterinary Agents
+        </button>
+        <button
+          onClick={() => setActiveTab('community')}
+          className={`flex-1 px-4 py-2 rounded-md transition-all ${
+            activeTab === 'community' 
+              ? 'bg-background shadow-sm text-foreground' 
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <MessageCircle className="w-4 h-4 inline mr-2" />
+          Community Forum
+        </button>
+      </div>
+
+      {/* Agents Tab */}
+      {activeTab === 'agents' && (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Connect with Local Veterinary Professionals
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Get instant professional help from certified veterinarians and animal health technicians in your area.
               </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsAgentMode(false)}
-          >
-            Maliza Kipindi
-          </Button>
+              
+              {isLoadingAgents ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Finding available agents near you...</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {availableAgents.map((agent) => (
+                    <Card key={agent.id} className="border-2 hover:border-primary/50 transition-colors">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-4">
+                            <Avatar className="w-12 h-12">
+                              <AvatarImage src={agent.avatar} alt={agent.name} />
+                              <AvatarFallback>{agent.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-semibold">{agent.name}</h4>
+                                <Badge variant={getAvailabilityBadge(agent.availability)}>
+                                  {agent.availability}
+                                </Badge>
+                              </div>
+                              
+                              <p className="text-sm text-muted-foreground mb-2">{agent.title}</p>
+                              
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="w-3 h-3" />
+                                  {agent.location} • {agent.distance}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                  {agent.rating} ({agent.totalCases} cases)
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  {agent.responseTime}
+                                </span>
+                              </div>
+                              
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                {agent.specialties.map((specialty, index) => (
+                                  <Badge key={index} variant="outline" className="text-xs">
+                                    {specialty}
+                                  </Badge>
+                                ))}
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <div className="text-xs text-muted-foreground">
+                                  <span className="font-medium">Languages:</span> {agent.languages.join(', ')}
+                                  <br />
+                                  <span className="font-medium">Cost:</span> {agent.cost}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => connectToAgent(agent)}
+                              disabled={agent.availability === 'offline'}
+                              className="whitespace-nowrap"
+                            >
+                              <MessageCircle className="w-4 h-4 mr-1" />
+                              Consult
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => window.open(`tel:+254700123456`)}
+                              className="whitespace-nowrap"
+                            >
+                              <Phone className="w-4 h-4 mr-1" />
+                              Call
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
-      </Card>
+      )}
 
-      {/* Daily Cases */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Kesi za Leo</h3>
-          <Badge variant="outline">{cases.length} kesi</Badge>
-        </div>
+      {/* Community Tab */}
+      {activeTab === 'community' && (
+        <div className="space-y-4">
+          {/* New Post Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Ask the Community</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Input
+                placeholder="What's your question about? (e.g., My cow is limping)"
+                value={newPost.title}
+                onChange={(e) => setNewPost(prev => ({...prev, title: e.target.value}))}
+              />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  placeholder="Animal type (e.g., Cow, Goat)"
+                  value={newPost.animalType}
+                  onChange={(e) => setNewPost(prev => ({...prev, animalType: e.target.value}))}
+                />
+                <select
+                  className="px-3 py-2 border rounded-md"
+                  value={newPost.urgency}
+                  onChange={(e) => setNewPost(prev => ({...prev, urgency: e.target.value as any}))}
+                >
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="high">High Priority</option>
+                </select>
+              </div>
+              
+              <Textarea
+                placeholder="Describe the symptoms and situation in detail..."
+                value={newPost.description}
+                onChange={(e) => setNewPost(prev => ({...prev, description: e.target.value}))}
+                rows={3}
+              />
+              
+              <Button onClick={submitCommunityPost} className="w-full">
+                <Send className="w-4 h-4 mr-2" />
+                Post to Community
+              </Button>
+            </CardContent>
+          </Card>
 
-        <div className="space-y-3">
-          {cases.map((case_) => (
-            <Card key={case_.id} className="p-4 border-l-4 border-l-primary/50">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{case_.farmerName}</span>
-                    <Badge variant={getUrgencyColor(case_.urgency)}>
-                      {case_.urgency === 'high' ? 'Haraka' : 
-                       case_.urgency === 'medium' ? 'Wastani' : 'Pole'}
-                    </Badge>
+          {/* Community Posts */}
+          <div className="space-y-4">
+            {communityPosts.map((post) => (
+              <Card key={post.id} className="border-l-4 border-l-primary">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={post.avatar} alt={post.author} />
+                        <AvatarFallback>{post.author.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-sm">{post.author}</p>
+                        <p className="text-xs text-muted-foreground">{post.timestamp}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {post.animalType}
+                      </Badge>
+                      <Badge variant={getUrgencyColor(post.urgency)} className="text-xs">
+                        {post.urgency}
+                      </Badge>
+                      {post.solved && (
+                        <Badge variant="default" className="text-xs bg-green-100 text-green-700">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Solved
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    <p className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      {case_.location}
-                    </p>
-                    <p><strong>Mnyama:</strong> {case_.animalType}</p>
-                    <p><strong>Hali:</strong> {case_.condition}</p>
+                  <h4 className="font-semibold mb-2">{post.title}</h4>
+                  <p className="text-sm text-muted-foreground mb-3">{post.description}</p>
+                  
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{post.responses} responses</span>
+                    <Button variant="ghost" size="sm" className="h-auto p-0 text-xs">
+                      View Discussion →
+                    </Button>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(case_.status)}
-                  <Button size="sm" variant="outline">
-                    {case_.status === 'pending' ? 'Anza' : 'Angalia'}
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
+      )}
 
-        <Button className="w-full mt-4">
-          <Phone className="w-4 h-4 mr-2" />
-          Ongeza Kesi Mpya
-        </Button>
-      </Card>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-success">12</div>
-          <div className="text-xs text-muted-foreground">Zimekamilika</div>
+      {/* Consultation Modal */}
+      {selectedAgent && (
+        <Card className="fixed inset-x-4 top-20 z-50 max-w-lg mx-auto border-2 border-primary bg-background shadow-xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={selectedAgent.avatar} alt={selectedAgent.name} />
+                <AvatarFallback>{selectedAgent.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-semibold">{selectedAgent.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedAgent.title}</p>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Textarea
+              placeholder="Describe your animal's condition and symptoms..."
+              value={consultationMessage}
+              onChange={(e) => setConsultationMessage(e.target.value)}
+              rows={4}
+            />
+            
+            <div className="flex gap-2">
+              <Button onClick={sendConsultationMessage} className="flex-1">
+                <Send className="w-4 h-4 mr-2" />
+                Send Consultation
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedAgent(null)}>
+                Cancel
+              </Button>
+            </div>
+            
+            <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded">
+              <p><strong>Response time:</strong> {selectedAgent.responseTime}</p>
+              <p><strong>Consultation cost:</strong> {selectedAgent.cost}</p>
+            </div>
+          </CardContent>
         </Card>
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-warning">3</div>
-          <div className="text-xs text-muted-foreground">Zinangoja</div>
-        </Card>
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-primary">85%</div>
-          <div className="text-xs text-muted-foreground">Mafanikio</div>
-        </Card>
-      </div>
+      )}
     </div>
   );
 };
