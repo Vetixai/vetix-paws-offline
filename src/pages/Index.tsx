@@ -21,10 +21,13 @@ import { LocalDiagnosisHistory } from "@/components/LocalDiagnosisHistory";
 import { LocalLanguageSupport, LanguageProvider } from "@/components/LocalLanguageSupport";
 import { PreventiveCareCalendar } from "@/components/PreventiveCareCalendar";
 import { EconomicImpactCalculator } from "@/components/EconomicImpactCalculator";
+import DiseaseOutbreakTracker from "@/components/DiseaseOutbreakTracker";
+import RegionalHealthAnalytics from "@/components/RegionalHealthAnalytics";
+import SupplyChainImpactTracker from "@/components/SupplyChainImpactTracker";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalSync } from "@/hooks/useLocalSync";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar } from "lucide-react";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const IndexContent = () => {
@@ -35,7 +38,7 @@ const IndexContent = () => {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string>("");
 
@@ -140,6 +143,16 @@ const IndexContent = () => {
         icon: <Calendar className="w-6 h-6" />,
         title: "Preventive Schedule", 
         description: "AI-powered vaccination and health calendars"
+      },
+      {
+        icon: <Activity className="w-6 h-6" />,
+        title: "Outbreak Tracking",
+        description: "Real-time disease monitoring and early warning systems"
+      },
+      {
+        icon: <BarChart className="w-6 h-6" />,
+        title: "Regional Analytics",
+        description: "Community-wide health insights and impact analysis"
       }
   ];
 
@@ -195,6 +208,15 @@ const IndexContent = () => {
             <Button variant="outline" onClick={() => setCurrentStep('economics')}>
               Economic Calculator
             </Button>
+            <Button variant="outline" onClick={() => setCurrentStep('outbreak')}>
+              Outbreak Tracker
+            </Button>
+            <Button variant="outline" onClick={() => setCurrentStep('analytics')}>
+              Health Analytics
+            </Button>
+            <Button variant="outline" onClick={() => setCurrentStep('supply')}>
+              Supply Chain
+            </Button>
           </div>
         </div>
       </Card>
@@ -213,14 +235,17 @@ const IndexContent = () => {
           </CardHeader>
           <CardContent className="px-0">
             <Tabs defaultValue="ai-chat" className="w-full">
-              <TabsList className="grid w-full grid-cols-7">
+              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10">
                 <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
-                <TabsTrigger value="smart-diagnosis">Smart Diagnosis</TabsTrigger>
+                <TabsTrigger value="smart-diagnosis">Diagnosis</TabsTrigger>
                 <TabsTrigger value="voice-ai">Voice AI</TabsTrigger>
                 <TabsTrigger value="image-gen">Image AI</TabsTrigger>
                 <TabsTrigger value="history">History</TabsTrigger>
                 <TabsTrigger value="calendar">Calendar</TabsTrigger>
                 <TabsTrigger value="economics">Economics</TabsTrigger>
+                <TabsTrigger value="outbreak">Outbreak</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                <TabsTrigger value="supply">Supply</TabsTrigger>
               </TabsList>
 
               <TabsContent value="ai-chat" className="space-y-4">
@@ -249,6 +274,18 @@ const IndexContent = () => {
 
               <TabsContent value="economics" className="space-y-4">
                 <EconomicImpactCalculator />
+              </TabsContent>
+
+              <TabsContent value="outbreak" className="space-y-4">
+                <DiseaseOutbreakTracker />
+              </TabsContent>
+
+              <TabsContent value="analytics" className="space-y-4">
+                <RegionalHealthAnalytics />
+              </TabsContent>
+
+              <TabsContent value="supply" className="space-y-4">
+                <SupplyChainImpactTracker />
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -411,6 +448,39 @@ const IndexContent = () => {
     </div>
   );
 
+  const renderOutbreak = () => (
+    <div className="animate-fade-in-up">
+      <DiseaseOutbreakTracker />
+      <div className="flex justify-center mt-6">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Back to Home
+        </Button>
+      </div>
+    </div>
+  );
+
+  const renderAnalytics = () => (
+    <div className="animate-fade-in-up">
+      <RegionalHealthAnalytics />
+      <div className="flex justify-center mt-6">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Back to Home
+        </Button>
+      </div>
+    </div>
+  );
+
+  const renderSupplyChain = () => (
+    <div className="animate-fade-in-up">
+      <SupplyChainImpactTracker />
+      <div className="flex justify-center mt-6">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Back to Home
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <OfflineIndicator />
@@ -463,6 +533,9 @@ const IndexContent = () => {
         {currentStep === 'agent' && renderAgentMode()}
         {currentStep === 'calendar' && renderCalendar()}
         {currentStep === 'economics' && renderEconomics()}
+        {currentStep === 'outbreak' && renderOutbreak()}
+        {currentStep === 'analytics' && renderAnalytics()}
+        {currentStep === 'supply' && renderSupplyChain()}
       </div>
     </div>
   );
