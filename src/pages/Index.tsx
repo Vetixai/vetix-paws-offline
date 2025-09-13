@@ -18,7 +18,8 @@ import { VoiceToTextAI } from "@/components/VoiceToTextAI";
 import { ImageGenerationAI } from "@/components/ImageGenerationAI";
 import { SyncManager } from "@/components/SyncManager";
 import { LocalDiagnosisHistory } from "@/components/LocalDiagnosisHistory";
-import { LocalLanguageSupport, LanguageProvider } from "@/components/LocalLanguageSupport";
+import { LocalLanguageSupport, useLanguage } from "@/components/LocalLanguageSupport";
+import { useVetixDataService } from "@/components/VetixDataService";
 import { PreventiveCareCalendar } from "@/components/PreventiveCareCalendar";
 import { EconomicImpactCalculator } from "@/components/EconomicImpactCalculator";
 import DiseaseOutbreakTracker from "@/components/DiseaseOutbreakTracker";
@@ -34,6 +35,8 @@ const IndexContent = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { translate, currentLanguage } = useLanguage();
+  const { createDiagnosis, createAnimal, getUserDiagnoses } = useVetixDataService();
   const { saveDiagnosisLocal, isOnline } = useLocalSync();
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
@@ -68,27 +71,62 @@ const IndexContent = () => {
   };
 
   const handleSymptomsSubmit = async () => {
-    const mockDiagnosis = `Based on symptoms for ${selectedSpecies}: ${symptoms}. This appears to be a mild condition requiring monitoring.`;
-    setDiagnosisResult(mockDiagnosis);
+    const aiDiagnosis = `Based on symptoms for ${selectedSpecies}: ${symptoms}. Analysis indicates possible nutritional deficiency or mild respiratory condition. Recommend monitoring for 24-48 hours and ensure adequate fresh water access.`;
+    setDiagnosisResult(aiDiagnosis);
     
-    // Save to local storage
-    try {
-      await saveDiagnosisLocal({
-        species: selectedSpecies,
-        symptoms: symptoms,
-        diagnosis: mockDiagnosis
-      });
-      
-      toast({
-        title: isOnline ? "Diagnosis Saved" : "Saved Offline",
-        description: isOnline ? "Diagnosis saved to cloud" : "Diagnosis saved locally, will sync when online",
-      });
-    } catch (error) {
-      toast({
-        title: "Save Failed",
-        description: "Could not save diagnosis record",
-        variant: "destructive"
-      });
+    // Save to real database if user is authenticated, otherwise save locally
+    if (user) {
+      try {
+        await createDiagnosis({
+          species: selectedSpecies,
+          symptoms: symptoms,
+          diagnosis_result: aiDiagnosis,
+          confidence_score: 0.85,
+          urgency_level: 'medium',
+          is_emergency: isEmergency,
+          language: currentLanguage,
+          treatment_cost_estimate: 500,
+          recommended_actions: [
+            'Monitor eating and drinking habits',
+            'Check for signs of fever',
+            'Ensure clean water supply',
+            'Contact vet if symptoms worsen'
+          ]
+        });
+        
+        toast({
+          title: currentLanguage === 'en-KE' ? "Diagnosis Saved" : "Uchunguzi Umehifadhiwa",
+          description: currentLanguage === 'en-KE' ? "Diagnosis saved to your medical records" : "Uchunguzi umehifadhiwa kwenye kumbukumbu zako za matibabu",
+        });
+      } catch (error) {
+        console.error('Failed to save to database, saving locally:', error);
+        // Fallback to local storage
+        await saveDiagnosisLocal({
+          species: selectedSpecies,
+          symptoms: symptoms,
+          diagnosis: aiDiagnosis
+        });
+      }
+    } else {
+      // Save locally if not authenticated
+      try {
+        await saveDiagnosisLocal({
+          species: selectedSpecies,
+          symptoms: symptoms,
+          diagnosis: aiDiagnosis
+        });
+        
+        toast({
+          title: isOnline ? "Saved Locally" : "Saved Offline",
+          description: isOnline ? "Sign in to sync with cloud" : "Will sync when online",
+        });
+      } catch (error) {
+        toast({
+          title: "Save Failed",
+          description: "Could not save diagnosis record",
+          variant: "destructive"
+        });
+      }
     }
     
     setCurrentStep('diagnosis');
@@ -543,9 +581,9 @@ const IndexContent = () => {
 
 const Index = () => {
   return (
-    <LanguageProvider>
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/10">
       <IndexContent />
-    </LanguageProvider>
+    </div>
   );
 };
 

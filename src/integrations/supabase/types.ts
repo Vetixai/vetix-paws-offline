@@ -14,6 +14,188 @@ export type Database = {
   }
   public: {
     Tables: {
+      animals: {
+        Row: {
+          acquisition_date: string | null
+          age_months: number | null
+          animal_type: Database["public"]["Enums"]["animal_type"]
+          breed: string | null
+          created_at: string | null
+          gender: string | null
+          id: string
+          identification_number: string | null
+          is_active: boolean | null
+          location: string | null
+          name: string | null
+          notes: string | null
+          updated_at: string | null
+          user_id: string
+          weight_kg: number | null
+        }
+        Insert: {
+          acquisition_date?: string | null
+          age_months?: number | null
+          animal_type: Database["public"]["Enums"]["animal_type"]
+          breed?: string | null
+          created_at?: string | null
+          gender?: string | null
+          id?: string
+          identification_number?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          name?: string | null
+          notes?: string | null
+          updated_at?: string | null
+          user_id: string
+          weight_kg?: number | null
+        }
+        Update: {
+          acquisition_date?: string | null
+          age_months?: number | null
+          animal_type?: Database["public"]["Enums"]["animal_type"]
+          breed?: string | null
+          created_at?: string | null
+          gender?: string | null
+          id?: string
+          identification_number?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          name?: string | null
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      diagnoses: {
+        Row: {
+          animal_id: string | null
+          confidence_score: number | null
+          created_at: string | null
+          diagnosis_result: string
+          follow_up_date: string | null
+          id: string
+          is_emergency: boolean | null
+          language: Database["public"]["Enums"]["user_language"] | null
+          location: string | null
+          recommended_actions: string[] | null
+          species: string
+          symptoms: string
+          treatment_cost_estimate: number | null
+          updated_at: string | null
+          urgency_level: Database["public"]["Enums"]["urgency_level"] | null
+          user_id: string
+        }
+        Insert: {
+          animal_id?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          diagnosis_result: string
+          follow_up_date?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          language?: Database["public"]["Enums"]["user_language"] | null
+          location?: string | null
+          recommended_actions?: string[] | null
+          species: string
+          symptoms: string
+          treatment_cost_estimate?: number | null
+          updated_at?: string | null
+          urgency_level?: Database["public"]["Enums"]["urgency_level"] | null
+          user_id: string
+        }
+        Update: {
+          animal_id?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          diagnosis_result?: string
+          follow_up_date?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          language?: Database["public"]["Enums"]["user_language"] | null
+          location?: string | null
+          recommended_actions?: string[] | null
+          species?: string
+          symptoms?: string
+          treatment_cost_estimate?: number | null
+          updated_at?: string | null
+          urgency_level?: Database["public"]["Enums"]["urgency_level"] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diagnoses_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disease_outbreaks: {
+        Row: {
+          affected_count: number | null
+          animal_type: Database["public"]["Enums"]["animal_type"]
+          containment_measures: string[] | null
+          coordinates: unknown | null
+          created_at: string | null
+          description: string | null
+          disease_name: string
+          id: string
+          location: string
+          mortality_count: number | null
+          region: string | null
+          reported_by_user_id: string
+          severity: Database["public"]["Enums"]["urgency_level"] | null
+          status: string | null
+          symptoms: string[] | null
+          updated_at: string | null
+          verified: boolean | null
+          verified_by: string | null
+        }
+        Insert: {
+          affected_count?: number | null
+          animal_type: Database["public"]["Enums"]["animal_type"]
+          containment_measures?: string[] | null
+          coordinates?: unknown | null
+          created_at?: string | null
+          description?: string | null
+          disease_name: string
+          id?: string
+          location: string
+          mortality_count?: number | null
+          region?: string | null
+          reported_by_user_id: string
+          severity?: Database["public"]["Enums"]["urgency_level"] | null
+          status?: string | null
+          symptoms?: string[] | null
+          updated_at?: string | null
+          verified?: boolean | null
+          verified_by?: string | null
+        }
+        Update: {
+          affected_count?: number | null
+          animal_type?: Database["public"]["Enums"]["animal_type"]
+          containment_measures?: string[] | null
+          coordinates?: unknown | null
+          created_at?: string | null
+          description?: string | null
+          disease_name?: string
+          id?: string
+          location?: string
+          mortality_count?: number | null
+          region?: string | null
+          reported_by_user_id?: string
+          severity?: Database["public"]["Enums"]["urgency_level"] | null
+          status?: string | null
+          symptoms?: string[] | null
+          updated_at?: string | null
+          verified?: boolean | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
       emergency_alerts: {
         Row: {
           animal_species: string | null
@@ -103,13 +285,120 @@ export type Database = {
         }
         Relationships: []
       }
+      health_reports: {
+        Row: {
+          animal_counts: Json | null
+          created_at: string | null
+          disease_incidents: number | null
+          economic_impact: number | null
+          generated_by_ai: boolean | null
+          health_metrics: Json | null
+          id: string
+          mortality_rate: number | null
+          recommendations: string[] | null
+          region: string
+          report_period_end: string | null
+          report_period_start: string | null
+          report_type: string | null
+          updated_at: string | null
+          user_id: string
+          vaccination_coverage: number | null
+        }
+        Insert: {
+          animal_counts?: Json | null
+          created_at?: string | null
+          disease_incidents?: number | null
+          economic_impact?: number | null
+          generated_by_ai?: boolean | null
+          health_metrics?: Json | null
+          id?: string
+          mortality_rate?: number | null
+          recommendations?: string[] | null
+          region: string
+          report_period_end?: string | null
+          report_period_start?: string | null
+          report_type?: string | null
+          updated_at?: string | null
+          user_id: string
+          vaccination_coverage?: number | null
+        }
+        Update: {
+          animal_counts?: Json | null
+          created_at?: string | null
+          disease_incidents?: number | null
+          economic_impact?: number | null
+          generated_by_ai?: boolean | null
+          health_metrics?: Json | null
+          id?: string
+          mortality_rate?: number | null
+          recommendations?: string[] | null
+          region?: string
+          report_period_end?: string | null
+          report_period_start?: string | null
+          report_type?: string | null
+          updated_at?: string | null
+          user_id?: string
+          vaccination_coverage?: number | null
+        }
+        Relationships: []
+      }
+      photo_analyses: {
+        Row: {
+          ai_analysis: string | null
+          confidence_score: number | null
+          created_at: string | null
+          detected_conditions: string[] | null
+          diagnosis_id: string | null
+          id: string
+          image_metadata: Json | null
+          image_url: string
+          is_processed: boolean | null
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          detected_conditions?: string[] | null
+          diagnosis_id?: string | null
+          id?: string
+          image_metadata?: Json | null
+          image_url: string
+          is_processed?: boolean | null
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          detected_conditions?: string[] | null
+          diagnosis_id?: string | null
+          id?: string
+          image_metadata?: Json | null
+          image_url?: string
+          is_processed?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_analyses_diagnosis_id_fkey"
+            columns: ["diagnosis_id"]
+            isOneToOne: false
+            referencedRelation: "diagnoses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
           full_name: string | null
           id: string
+          is_verified: boolean | null
+          language: Database["public"]["Enums"]["user_language"] | null
           location: string | null
           phone_number: string | null
+          timezone: string | null
           updated_at: string
           user_id: string
           user_type: string | null
@@ -118,8 +407,11 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_verified?: boolean | null
+          language?: Database["public"]["Enums"]["user_language"] | null
           location?: string | null
           phone_number?: string | null
+          timezone?: string | null
           updated_at?: string
           user_id: string
           user_type?: string | null
@@ -128,13 +420,200 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_verified?: boolean | null
+          language?: Database["public"]["Enums"]["user_language"] | null
           location?: string | null
           phone_number?: string | null
+          timezone?: string | null
           updated_at?: string
           user_id?: string
           user_type?: string | null
         }
         Relationships: []
+      }
+      treatments: {
+        Row: {
+          administered_by: string | null
+          animal_id: string | null
+          cost: number | null
+          created_at: string | null
+          diagnosis_id: string | null
+          dosage: string | null
+          duration_days: number | null
+          end_date: string | null
+          frequency: string | null
+          id: string
+          is_completed: boolean | null
+          medication: string | null
+          notes: string | null
+          start_date: string | null
+          treatment_name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          administered_by?: string | null
+          animal_id?: string | null
+          cost?: number | null
+          created_at?: string | null
+          diagnosis_id?: string | null
+          dosage?: string | null
+          duration_days?: number | null
+          end_date?: string | null
+          frequency?: string | null
+          id?: string
+          is_completed?: boolean | null
+          medication?: string | null
+          notes?: string | null
+          start_date?: string | null
+          treatment_name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          administered_by?: string | null
+          animal_id?: string | null
+          cost?: number | null
+          created_at?: string | null
+          diagnosis_id?: string | null
+          dosage?: string | null
+          duration_days?: number | null
+          end_date?: string | null
+          frequency?: string | null
+          id?: string
+          is_completed?: boolean | null
+          medication?: string | null
+          notes?: string | null
+          start_date?: string | null
+          treatment_name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatments_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatments_diagnosis_id_fkey"
+            columns: ["diagnosis_id"]
+            isOneToOne: false
+            referencedRelation: "diagnoses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vaccinations: {
+        Row: {
+          administered_by: string | null
+          administered_date: string | null
+          animal_id: string | null
+          batch_number: string | null
+          cost: number | null
+          created_at: string | null
+          disease_prevention: string
+          id: string
+          location: string | null
+          next_due_date: string | null
+          notes: string | null
+          updated_at: string | null
+          user_id: string
+          vaccine_name: string
+        }
+        Insert: {
+          administered_by?: string | null
+          administered_date?: string | null
+          animal_id?: string | null
+          batch_number?: string | null
+          cost?: number | null
+          created_at?: string | null
+          disease_prevention: string
+          id?: string
+          location?: string | null
+          next_due_date?: string | null
+          notes?: string | null
+          updated_at?: string | null
+          user_id: string
+          vaccine_name: string
+        }
+        Update: {
+          administered_by?: string | null
+          administered_date?: string | null
+          animal_id?: string | null
+          batch_number?: string | null
+          cost?: number | null
+          created_at?: string | null
+          disease_prevention?: string
+          id?: string
+          location?: string | null
+          next_due_date?: string | null
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string
+          vaccine_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vaccinations_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_recordings: {
+        Row: {
+          audio_url: string | null
+          confidence_score: number | null
+          created_at: string | null
+          diagnosis_id: string | null
+          duration_seconds: number | null
+          file_size_bytes: number | null
+          id: string
+          is_processed: boolean | null
+          language: Database["public"]["Enums"]["user_language"] | null
+          transcription: string | null
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          diagnosis_id?: string | null
+          duration_seconds?: number | null
+          file_size_bytes?: number | null
+          id?: string
+          is_processed?: boolean | null
+          language?: Database["public"]["Enums"]["user_language"] | null
+          transcription?: string | null
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          diagnosis_id?: string | null
+          duration_seconds?: number | null
+          file_size_bytes?: number | null
+          id?: string
+          is_processed?: boolean | null
+          language?: Database["public"]["Enums"]["user_language"] | null
+          transcription?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_recordings_diagnosis_id_fkey"
+            columns: ["diagnosis_id"]
+            isOneToOne: false
+            referencedRelation: "diagnoses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -144,7 +623,23 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      animal_type:
+        | "cattle"
+        | "goat"
+        | "sheep"
+        | "chicken"
+        | "pig"
+        | "horse"
+        | "donkey"
+        | "cat"
+        | "dog"
+        | "rabbit"
+        | "duck"
+        | "turkey"
+        | "fish"
+        | "other"
+      urgency_level: "low" | "medium" | "high" | "critical"
+      user_language: "sw-KE" | "sw-TZ" | "en-KE" | "luo" | "kik"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -271,6 +766,25 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      animal_type: [
+        "cattle",
+        "goat",
+        "sheep",
+        "chicken",
+        "pig",
+        "horse",
+        "donkey",
+        "cat",
+        "dog",
+        "rabbit",
+        "duck",
+        "turkey",
+        "fish",
+        "other",
+      ],
+      urgency_level: ["low", "medium", "high", "critical"],
+      user_language: ["sw-KE", "sw-TZ", "en-KE", "luo", "kik"],
+    },
   },
 } as const

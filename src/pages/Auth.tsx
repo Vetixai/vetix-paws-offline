@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Stethoscope } from 'lucide-react';
+import { useLanguage } from '@/components/LocalLanguageSupport';
+import { Loader2, Stethoscope, Globe } from 'lucide-react';
 import type { User, Session } from '@supabase/supabase-js';
 
 const Auth = () => {
@@ -23,6 +24,7 @@ const Auth = () => {
   const [userType, setUserType] = useState<'farmer' | 'agent' | 'veterinarian'>('farmer');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentLanguage, setLanguage, translate } = useLanguage();
 
   useEffect(() => {
     // Set up auth state listener
@@ -67,6 +69,7 @@ const Auth = () => {
             phone_number: phoneNumber,
             location: location,
             user_type: userType,
+            language: currentLanguage,
           }
         }
       });
@@ -74,21 +77,21 @@ const Auth = () => {
       if (error) {
         if (error.message.includes('User already registered')) {
           toast({
-            title: "Account exists",
-            description: "This email is already registered. Please sign in instead.",
+            title: currentLanguage === 'en-KE' ? "Account exists" : "Akaunti ipo",
+            description: currentLanguage === 'en-KE' ? "This email is already registered. Please sign in instead." : "Barua pepe hii imeshasajiliwa. Tafadhali ingia badala yake.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Sign up failed",
+            title: currentLanguage === 'en-KE' ? "Sign up failed" : "Usajili umeshindwa",
             description: error.message,
             variant: "destructive",
           });
         }
       } else {
         toast({
-          title: "Check your email",
-          description: "We've sent you a confirmation link to complete your registration.",
+          title: currentLanguage === 'en-KE' ? "Check your email" : "Angalia barua pepe yako",
+          description: currentLanguage === 'en-KE' ? "We've sent you a confirmation link to complete your registration." : "Tumetuma kiunga cha uthibitisho kukamilisha usajili wako.",
         });
       }
     } catch (error) {
@@ -115,13 +118,13 @@ const Auth = () => {
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast({
-            title: "Invalid credentials",
-            description: "Please check your email and password and try again.",
+            title: currentLanguage === 'en-KE' ? "Invalid credentials" : "Utambulisho si sahihi",
+            description: currentLanguage === 'en-KE' ? "Please check your email and password and try again." : "Tafadhali hakiki barua pepe na nenosiri lako ujaribu tena.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Sign in failed",
+            title: currentLanguage === 'en-KE' ? "Sign in failed" : "Kuingia kumeshindwa",
             description: error.message,
             variant: "destructive",
           });
@@ -142,48 +145,62 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-secondary/20 flex items-center justify-center p-4">
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
-            <Stethoscope className="h-8 w-8 text-primary" />
+          <div className="flex justify-between items-start mb-4">
+            <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit">
+              <Stethoscope className="h-8 w-8 text-primary" />
+            </div>
+            <Select value={currentLanguage} onValueChange={setLanguage}>
+              <SelectTrigger className="w-32">
+                <Globe className="h-4 w-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sw-KE">🇰🇪 KiSwahili</SelectItem>
+                <SelectItem value="en-KE">🇬🇧 English</SelectItem>
+                <SelectItem value="luo">🇰🇪 Dholuo</SelectItem>
+                <SelectItem value="kik">🇰🇪 Gĩkũyũ</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <CardTitle className="text-2xl font-bold">Vetix AI</CardTitle>
           <CardDescription>
-            Msaada wa AI kwa afya ya wanyamapori
+            {currentLanguage === 'en-KE' ? 'AI-powered animal health assistant' : 'Msaada wa AI kwa afya ya wanyamapori'}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Ingia</TabsTrigger>
-              <TabsTrigger value="signup">Jisajili</TabsTrigger>
+              <TabsTrigger value="signin">{currentLanguage === 'en-KE' ? 'Sign In' : 'Ingia'}</TabsTrigger>
+              <TabsTrigger value="signup">{currentLanguage === 'en-KE' ? 'Sign Up' : 'Jisajili'}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Barua pepe</Label>
+                  <Label htmlFor="signin-email">{currentLanguage === 'en-KE' ? 'Email' : 'Barua pepe'}</Label>
                   <Input
                     id="signin-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="mfano@email.com"
+                    placeholder={currentLanguage === 'en-KE' ? 'example@email.com' : 'mfano@email.com'}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Nenosiri</Label>
+                  <Label htmlFor="signin-password">{currentLanguage === 'en-KE' ? 'Password' : 'Nenosiri'}</Label>
                   <Input
                     id="signin-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Weka nenosiri lako"
+                    placeholder={currentLanguage === 'en-KE' ? 'Enter your password' : 'Weka nenosiri lako'}
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Ingia
+                  {currentLanguage === 'en-KE' ? 'Sign In' : 'Ingia'}
                 </Button>
               </form>
             </TabsContent>
@@ -191,41 +208,41 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Jina kamili</Label>
+                  <Label htmlFor="signup-name">{currentLanguage === 'en-KE' ? 'Full Name' : 'Jina kamili'}</Label>
                   <Input
                     id="signup-name"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Jina lako kamili"
+                    placeholder={currentLanguage === 'en-KE' ? 'Your full name' : 'Jina lako kamili'}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Barua pepe</Label>
+                  <Label htmlFor="signup-email">{currentLanguage === 'en-KE' ? 'Email' : 'Barua pepe'}</Label>
                   <Input
                     id="signup-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="mfano@email.com"
+                    placeholder={currentLanguage === 'en-KE' ? 'example@email.com' : 'mfano@email.com'}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Nenosiri</Label>
+                  <Label htmlFor="signup-password">{currentLanguage === 'en-KE' ? 'Password' : 'Nenosiri'}</Label>
                   <Input
                     id="signup-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Chagua nenosiri"
+                    placeholder={currentLanguage === 'en-KE' ? 'Choose a password' : 'Chagua nenosiri'}
                     required
                     minLength={6}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Nambari ya simu</Label>
+                  <Label htmlFor="phone">{currentLanguage === 'en-KE' ? 'Phone Number' : 'Nambari ya simu'}</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -235,31 +252,31 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="location">Mahali</Label>
+                  <Label htmlFor="location">{currentLanguage === 'en-KE' ? 'Location' : 'Mahali'}</Label>
                   <Input
                     id="location"
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Kaunti/Wilaya"
+                    placeholder={currentLanguage === 'en-KE' ? 'County/District' : 'Kaunti/Wilaya'}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="user-type">Aina ya mtumiaji</Label>
+                  <Label htmlFor="user-type">{currentLanguage === 'en-KE' ? 'User Type' : 'Aina ya mtumiaji'}</Label>
                   <Select value={userType} onValueChange={(value: 'farmer' | 'agent' | 'veterinarian') => setUserType(value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Chagua aina ya mtumiaji" />
+                      <SelectValue placeholder={currentLanguage === 'en-KE' ? 'Select user type' : 'Chagua aina ya mtumiaji'} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="farmer">Mfugaji</SelectItem>
-                      <SelectItem value="agent">Wakala wa jamii</SelectItem>
-                      <SelectItem value="veterinarian">Daktari wa wanyamapori</SelectItem>
+                      <SelectItem value="farmer">{currentLanguage === 'en-KE' ? 'Farmer' : 'Mfugaji'}</SelectItem>
+                      <SelectItem value="agent">{currentLanguage === 'en-KE' ? 'Community Agent' : 'Wakala wa jamii'}</SelectItem>
+                      <SelectItem value="veterinarian">{currentLanguage === 'en-KE' ? 'Veterinarian' : 'Daktari wa wanyamapori'}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Jisajili
+                  {currentLanguage === 'en-KE' ? 'Sign Up' : 'Jisajili'}
                 </Button>
               </form>
             </TabsContent>
