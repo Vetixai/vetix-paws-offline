@@ -28,6 +28,7 @@ import SupplyChainImpactTracker from "@/components/SupplyChainImpactTracker";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalSync } from "@/hooks/useLocalSync";
+import { supabase } from "@/integrations/supabase/client";
 import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
@@ -71,11 +72,23 @@ const IndexContent = () => {
   };
 
   const handleSymptomsSubmit = async () => {
-    const aiDiagnosis = `Based on symptoms for ${selectedSpecies}: ${symptoms}. Analysis indicates possible nutritional deficiency or mild respiratory condition. Recommend monitoring for 24-48 hours and ensure adequate fresh water access.`;
-    setDiagnosisResult(aiDiagnosis);
-    
-    // Save to real database if user is authenticated, otherwise save locally
-    if (user) {
+    try {
+      // Call AI diagnosis function
+      const { data: aiResponse, error: aiError } = await supabase.functions.invoke('smart-diagnosis', {
+        body: {
+          symptoms: symptoms.trim(),
+          animalType: selectedSpecies,
+          language: currentLanguage
+        }
+      });
+
+      if (aiError) throw aiError;
+
+      const aiDiagnosis = aiResponse?.diagnosis || aiResponse?.result || "Unable to generate diagnosis. Please consult a veterinarian.";
+      setDiagnosisResult(aiDiagnosis);
+      
+      // Save to real database if user is authenticated, otherwise save locally
+      if (user) {
       try {
         await createDiagnosis({
           species: selectedSpecies,
@@ -130,6 +143,14 @@ const IndexContent = () => {
     }
     
     setCurrentStep('diagnosis');
+    } catch (error) {
+      console.error('Error during diagnosis:', error);
+      toast({
+        title: "Diagnosis Failed",
+        description: "Could not complete diagnosis. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleVoiceTranscription = (text: string) => {
