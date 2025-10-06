@@ -175,44 +175,19 @@ const IndexContent = () => {
     },
     {
       icon: <Camera className="w-6 h-6" />,
-      title: "Photo Analysis", 
-      description: "Analyze wounds, infections, and physical conditions through photos"
+      title: "Photo & Voice Analysis", 
+      description: "Analyze conditions through photos or speak in Swahili/English"
     },
     {
-      icon: <Mic className="w-6 h-6" />,
-      title: "Voice Assistant",
-      description: "Speak in Swahili or English - perfect for farmers who can't read"
+      icon: <Activity className="w-6 h-6" />,
+      title: "Disease Tracking",
+      description: "Real-time disease monitoring and outbreak prevention"
     },
     {
-      icon: <Users className="w-6 h-6" />,
-      title: "Community Agent",
-      description: "Shared device mode for community health workers serving multiple farmers"
-    },
-      {
-        icon: <Heart className="w-6 h-6" />,
-        title: "Emergency Care",
-        description: "Immediate emergency response instructions and protocols"
-      },
-      {
-        icon: <TrendingUp className="w-6 h-6" />,
-        title: "Economic Impact",
-        description: "Calculate treatment costs vs benefits for informed decisions"
-      },
-      {
-        icon: <Calendar className="w-6 h-6" />,
-        title: "Preventive Schedule", 
-        description: "AI-powered vaccination and health calendars"
-      },
-      {
-        icon: <Activity className="w-6 h-6" />,
-        title: "Outbreak Tracking",
-        description: "Real-time disease monitoring and early warning systems"
-      },
-      {
-        icon: <BarChart className="w-6 h-6" />,
-        title: "Regional Analytics",
-        description: "Community-wide health insights and impact analysis"
-      }
+      icon: <Heart className="w-6 h-6" />,
+      title: "Emergency Care",
+      description: "Immediate emergency response and community health support"
+    }
   ];
 
   const renderWelcomeScreen = () => (
@@ -236,55 +211,31 @@ const IndexContent = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         {features.map((feature, index) => (
           <Card key={index} className="p-6 hover:shadow-soft transition-all duration-300 hover:scale-105">
             <div className="text-primary mb-3">{feature.icon}</div>
             <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-            <p className="text-muted-foreground">{feature.description}</p>
+            <p className="text-muted-foreground text-sm">{feature.description}</p>
           </Card>
         ))}
       </div>
 
-      {/* Mission Statement */}
-      <Card className="p-8 bg-gradient-to-r from-accent to-muted border-none">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4 text-foreground">Bringing Veterinary Care to Every Corner</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Vetix AI empowers farmers, pet owners, and community health workers in remote areas with AI-powered 
-            veterinary assistance that works completely offline. No internet required, no animal left behind.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button variant="secondary" onClick={() => setShowAiFeatures(!showAiFeatures)}>
-              {showAiFeatures ? 'Hide' : 'Show'} AI Features
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentStep('agent')}>
-              Community Agent Mode
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentStep('calendar')}>
-              Care Calendar
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentStep('economics')}>
-              Economic Calculator
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentStep('outbreak')}>
-              Outbreak Tracker
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentStep('analytics')}>
-              Health Analytics
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentStep('supply')}>
-              Supply Chain
-            </Button>
-          </div>
-        </div>
-      </Card>
-
-      {/* Language Support */}
-      <LocalLanguageSupport />
-
-      {/* Sync Manager */}
-      <SyncManager />
+      {/* Quick Actions */}
+      <div className="flex flex-wrap justify-center gap-4">
+        <Button variant="secondary" size="lg" onClick={() => setShowAiFeatures(!showAiFeatures)}>
+          <Brain className="w-4 h-4 mr-2" />
+          {showAiFeatures ? 'Hide' : 'Explore'} AI Tools
+        </Button>
+        <Button variant="outline" size="lg" onClick={() => setCurrentStep('outbreak')}>
+          <Activity className="w-4 h-4 mr-2" />
+          Disease Tracker
+        </Button>
+        <Button variant="outline" size="lg" onClick={() => setCurrentStep('analytics')}>
+          <BarChart className="w-4 h-4 mr-2" />
+          Analytics
+        </Button>
+      </div>
 
       {/* AI Features Section */}
       {showAiFeatures && (
@@ -293,34 +244,25 @@ const IndexContent = () => {
             <CardTitle>AI Features / Vipengele vya Akili</CardTitle>
           </CardHeader>
           <CardContent className="px-0">
-            <Tabs defaultValue="ai-chat" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10">
-                <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
+            <Tabs defaultValue="smart-diagnosis" className="w-full">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="smart-diagnosis">Diagnosis</TabsTrigger>
-                <TabsTrigger value="voice-ai">Voice AI</TabsTrigger>
-                <TabsTrigger value="image-gen">Image AI</TabsTrigger>
+                <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
+                <TabsTrigger value="voice-ai">Voice</TabsTrigger>
                 <TabsTrigger value="history">History</TabsTrigger>
                 <TabsTrigger value="calendar">Calendar</TabsTrigger>
-                <TabsTrigger value="economics">Economics</TabsTrigger>
-                <TabsTrigger value="outbreak">Outbreak</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                <TabsTrigger value="supply">Supply</TabsTrigger>
               </TabsList>
-
-              <TabsContent value="ai-chat" className="space-y-4">
-                <AIChatAssistant />
-              </TabsContent>
 
               <TabsContent value="smart-diagnosis" className="space-y-4">
                 <SmartDiagnosis />
               </TabsContent>
 
-              <TabsContent value="voice-ai" className="space-y-4">
-                <VoiceToTextAI />
+              <TabsContent value="ai-chat" className="space-y-4">
+                <AIChatAssistant />
               </TabsContent>
 
-              <TabsContent value="image-gen" className="space-y-4">
-                <ImageGenerationAI />
+              <TabsContent value="voice-ai" className="space-y-4">
+                <VoiceToTextAI />
               </TabsContent>
 
               <TabsContent value="history" className="space-y-4">
@@ -329,22 +271,6 @@ const IndexContent = () => {
 
               <TabsContent value="calendar" className="space-y-4">
                 <PreventiveCareCalendar />
-              </TabsContent>
-
-              <TabsContent value="economics" className="space-y-4">
-                <EconomicImpactCalculator />
-              </TabsContent>
-
-              <TabsContent value="outbreak" className="space-y-4">
-                <DiseaseOutbreakTracker />
-              </TabsContent>
-
-              <TabsContent value="analytics" className="space-y-4">
-                <RegionalHealthAnalytics />
-              </TabsContent>
-
-              <TabsContent value="supply" className="space-y-4">
-                <SupplyChainImpactTracker />
               </TabsContent>
             </Tabs>
           </CardContent>
