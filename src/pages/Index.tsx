@@ -166,27 +166,38 @@ const IndexContent = () => {
     {
       icon: <Stethoscope className="w-6 h-6" />,
       title: "AI Diagnosis",
-      description: "Get instant health assessments for your animals using advanced AI"
+      description: "Get instant health assessments for your animals using advanced AI",
+      action: handleStartDiagnosis
     },
     {
       icon: <Globe className="w-6 h-6" />,
       title: "Works Offline",
-      description: "Full functionality without internet connection for remote areas"
+      description: "Full functionality without internet connection for remote areas",
+      action: () => setShowAiFeatures(true)
     },
     {
       icon: <Camera className="w-6 h-6" />,
       title: "Photo & Voice Analysis", 
-      description: "Analyze conditions through photos or speak in Swahili/English"
+      description: "Analyze conditions through photos or speak in Swahili/English",
+      action: () => {
+        setShowAiFeatures(true);
+        setTimeout(() => {
+          const tabTrigger = document.querySelector('[value="voice-ai"]');
+          if (tabTrigger) (tabTrigger as HTMLElement).click();
+        }, 100);
+      }
     },
     {
       icon: <Activity className="w-6 h-6" />,
       title: "Disease Tracking",
-      description: "Real-time disease monitoring and outbreak prevention"
+      description: "Real-time disease monitoring and outbreak prevention",
+      action: () => setCurrentStep('outbreak')
     },
     {
       icon: <Heart className="w-6 h-6" />,
       title: "Emergency Care",
-      description: "Immediate emergency response and community health support"
+      description: "Immediate emergency response and community health support",
+      action: () => setIsEmergency(true)
     }
   ];
 
@@ -213,9 +224,13 @@ const IndexContent = () => {
       {/* Features Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         {features.map((feature, index) => (
-          <Card key={index} className="p-6 hover:shadow-soft transition-all duration-300 hover:scale-105">
-            <div className="text-primary mb-3">{feature.icon}</div>
-            <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+          <Card 
+            key={index} 
+            className="p-6 bg-background border-border hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+            onClick={feature.action}
+          >
+            <div className="text-blue-600 mb-3">{feature.icon}</div>
+            <h3 className="font-semibold text-lg mb-2 text-blue-600">{feature.title}</h3>
             <p className="text-muted-foreground text-sm">{feature.description}</p>
           </Card>
         ))}
@@ -223,15 +238,30 @@ const IndexContent = () => {
 
       {/* Quick Actions */}
       <div className="flex flex-wrap justify-center gap-4">
-        <Button variant="secondary" size="lg" onClick={() => setShowAiFeatures(!showAiFeatures)}>
+        <Button 
+          variant="default" 
+          size="lg" 
+          onClick={() => setShowAiFeatures(!showAiFeatures)}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
           <Brain className="w-4 h-4 mr-2" />
           {showAiFeatures ? 'Hide' : 'Explore'} AI Tools
         </Button>
-        <Button variant="outline" size="lg" onClick={() => setCurrentStep('outbreak')}>
+        <Button 
+          variant="outline" 
+          size="lg" 
+          onClick={() => setCurrentStep('outbreak')}
+          className="border-blue-600 text-blue-600 hover:bg-blue-50"
+        >
           <Activity className="w-4 h-4 mr-2" />
           Disease Tracker
         </Button>
-        <Button variant="outline" size="lg" onClick={() => setCurrentStep('analytics')}>
+        <Button 
+          variant="outline" 
+          size="lg" 
+          onClick={() => setCurrentStep('analytics')}
+          className="border-blue-600 text-blue-600 hover:bg-blue-50"
+        >
           <BarChart className="w-4 h-4 mr-2" />
           Analytics
         </Button>
