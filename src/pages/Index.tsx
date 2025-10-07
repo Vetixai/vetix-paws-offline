@@ -42,7 +42,7 @@ const IndexContent = () => {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply' | 'offline'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string>("");
 
@@ -173,7 +173,7 @@ const IndexContent = () => {
       icon: <Globe className="w-6 h-6" />,
       title: "Works Offline",
       description: "Full functionality without internet connection for remote areas",
-      action: () => setShowAiFeatures(true)
+      action: () => setCurrentStep('offline')
     },
     {
       icon: <Camera className="w-6 h-6" />,
@@ -496,6 +496,77 @@ const IndexContent = () => {
     </div>
   );
 
+  const renderOffline = () => (
+    <div className="animate-fade-in-up space-y-6">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold mb-2">Offline Mode</h2>
+        <p className="text-muted-foreground">Manage offline data and sync when online</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <Card className="p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle>Sync Manager</CardTitle>
+          </CardHeader>
+          <CardContent className="px-0">
+            <SyncManager />
+          </CardContent>
+        </Card>
+
+        <Card className="p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle>Offline Features</CardTitle>
+          </CardHeader>
+          <CardContent className="px-0 space-y-3">
+            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+              <Stethoscope className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="font-semibold">AI Diagnosis</p>
+                <p className="text-sm text-muted-foreground">Works without internet</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+              <Camera className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="font-semibold">Photo Analysis</p>
+                <p className="text-sm text-muted-foreground">Analyze offline, sync later</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+              <Mic className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="font-semibold">Voice Input</p>
+                <p className="text-sm text-muted-foreground">Record symptoms offline</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+              <Activity className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="font-semibold">Local History</p>
+                <p className="text-sm text-muted-foreground">Access past diagnoses</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="p-6 max-w-4xl mx-auto">
+        <CardHeader className="px-0 pt-0">
+          <CardTitle>Recent Offline Diagnoses</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0">
+          <LocalDiagnosisHistory />
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-center">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          Back to Home
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <OfflineIndicator />
@@ -551,6 +622,7 @@ const IndexContent = () => {
         {currentStep === 'outbreak' && renderOutbreak()}
         {currentStep === 'analytics' && renderAnalytics()}
         {currentStep === 'supply' && renderSupplyChain()}
+        {currentStep === 'offline' && renderOffline()}
       </div>
     </div>
   );
