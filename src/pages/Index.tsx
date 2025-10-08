@@ -18,6 +18,7 @@ import { VoiceToTextAI } from "@/components/VoiceToTextAI";
 import { ImageGenerationAI } from "@/components/ImageGenerationAI";
 import { SyncManager } from "@/components/SyncManager";
 import { LocalDiagnosisHistory } from "@/components/LocalDiagnosisHistory";
+import { EmergencyContacts } from "@/components/EmergencyContacts";
 import { LocalLanguageSupport, useLanguage } from "@/components/LocalLanguageSupport";
 import { useVetixDataService } from "@/components/VetixDataService";
 import { PreventiveCareCalendar } from "@/components/PreventiveCareCalendar";
@@ -550,14 +551,18 @@ const IndexContent = () => {
         </Card>
       </div>
 
-      <Card className="p-6 max-w-4xl mx-auto">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle>Recent Offline Diagnoses</CardTitle>
-        </CardHeader>
-        <CardContent className="px-0">
-          <LocalDiagnosisHistory />
-        </CardContent>
-      </Card>
+      <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <Card className="p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle>Recent Offline Diagnoses</CardTitle>
+          </CardHeader>
+          <CardContent className="px-0">
+            <LocalDiagnosisHistory />
+          </CardContent>
+        </Card>
+
+        <EmergencyContacts />
+      </div>
 
       <div className="flex justify-center">
         <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
