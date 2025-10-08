@@ -262,6 +262,14 @@ export const CommunityAgentMode = () => {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
                   <p className="text-muted-foreground">Finding available agents near you...</p>
                 </div>
+              ) : availableAgents.length === 0 ? (
+                <div className="text-center py-12">
+                  <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">No Agents Available</h3>
+                  <p className="text-muted-foreground">
+                    Veterinary agents will be listed here once they register in your area.
+                  </p>
+                </div>
               ) : (
                 <div className="space-y-4">
                   {availableAgents.map((agent) => (
@@ -395,7 +403,16 @@ export const CommunityAgentMode = () => {
           </Card>
 
           {/* Community Posts */}
-          <div className="space-y-4">
+          {communityPosts.length === 0 ? (
+            <div className="text-center py-12">
+              <MessageCircle className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 className="text-lg font-semibold mb-2">No Community Posts Yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Be the first to ask a question or share your experience with the community!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
             {communityPosts.map((post) => (
               <Card key={post.id} className="border-l-4 border-l-primary">
                 <CardContent className="p-4">
@@ -439,7 +456,8 @@ export const CommunityAgentMode = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

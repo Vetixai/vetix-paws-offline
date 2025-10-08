@@ -12,12 +12,6 @@ interface EmergencyAssessment {
   symptoms: string[];
   immediateActions: string[];
   timeToTreat: string;
-  nearestVet?: {
-    name: string;
-    distance: string;
-    phone: string;
-    available: boolean;
-  };
 }
 
 export const EmergencyMode = () => {
@@ -83,13 +77,7 @@ export const EmergencyMode = () => {
         "Contact veterinarian"
       ],
       timeToTreat: criticalSymptoms.length > 0 ? "IMMEDIATE - Within 30 minutes" : 
-                   selectedSymptoms.length > 2 ? "Within 2-4 hours" : "Within 24 hours",
-      nearestVet: {
-        name: "Dr. Mwangi Emergency Veterinary Clinic",
-        distance: "2.3 km away",
-        phone: "+254-700-123-456",
-        available: true
-      }
+                   selectedSymptoms.length > 2 ? "Within 2-4 hours" : "Within 24 hours"
     };
     
     setAssessment(assessment);
@@ -290,31 +278,16 @@ export const EmergencyMode = () => {
               </ul>
             </div>
 
-            {/* Nearest Vet */}
-            {assessment.nearestVet && (
-              <div className="bg-white p-4 rounded-lg border-2 border-green-200">
-                <h4 className="font-semibold mb-2 text-green-700 flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Nearest Emergency Veterinarian
-                </h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">{assessment.nearestVet.name}</span>
-                    <Badge variant={assessment.nearestVet.available ? 'default' : 'secondary'}>
-                      {assessment.nearestVet.available ? 'Available' : 'Call to confirm'}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{assessment.nearestVet.distance}</p>
-                  <Button 
-                    className="w-full bg-green-600 hover:bg-green-700 text-white"
-                    onClick={() => window.open(`tel:${assessment.nearestVet?.phone}`)}
-                  >
-                    <Phone className="w-4 h-4 mr-2" />
-                    CALL NOW: {assessment.nearestVet.phone}
-                  </Button>
-                </div>
-              </div>
-            )}
+            {/* Check your emergency contacts for nearest vet */}
+            <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+              <h4 className="font-semibold mb-2 text-blue-700 flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Contact Emergency Vet
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                Check your Emergency Contacts list for veterinary professionals in your area.
+              </p>
+            </div>
 
             {/* Exit Emergency Mode */}
             <Button 

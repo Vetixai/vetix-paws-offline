@@ -46,84 +46,17 @@ const SupplyChainImpactTracker: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
-    // Simulate supply chain data
-    const mockSupplyData: SupplyData[] = [
-      {
-        product: 'Milk',
-        currentSupply: 78,
-        demandForecast: 95,
-        pricePerUnit: 45,
-        priceChange: 12.5,
-        qualityScore: 92,
-        shelfLife: 5,
-        affectedBy: ['Mastitis outbreaks', 'Feed shortage', 'Transport delays']
-      },
-      {
-        product: 'Eggs',
-        currentSupply: 65,
-        demandForecast: 88,
-        pricePerUnit: 18,
-        priceChange: 25.3,
-        qualityScore: 88,
-        shelfLife: 28,
-        affectedBy: ['Newcastle Disease', 'Avian Flu concerns', 'Feed costs']
-      },
-      {
-        product: 'Meat (Beef)',
-        currentSupply: 82,
-        demandForecast: 90,
-        pricePerUnit: 320,
-        priceChange: 8.7,
-        qualityScore: 95,
-        shelfLife: 7,
-        affectedBy: ['Foot and Mouth Disease', 'Grazing restrictions']
-      },
-      {
-        product: 'Chicken',
-        currentSupply: 45,
-        demandForecast: 92,
-        pricePerUnit: 280,
-        priceChange: 35.2,
-        qualityScore: 85,
-        shelfLife: 3,
-        affectedBy: ['Newcastle Disease', 'High mortality', 'Production decline']
-      }
-    ];
-
-    const mockMarketImpacts: MarketImpact[] = [
-      {
-        region: 'Nairobi Metropolitan',
-        product: 'Eggs',
-        supplyReduction: 35,
-        priceIncrease: 25,
-        affectedPopulation: 4500000,
-        alternativeSources: ['Imported eggs', 'Neighboring counties', 'Preserved alternatives'],
-        recommendedActions: ['Emergency imports', 'Price controls', 'Consumer education']
-      },
-      {
-        region: 'Coast Region',
-        product: 'Milk',
-        supplyReduction: 22,
-        priceIncrease: 12,
-        affectedPopulation: 1200000,
-        alternativeSources: ['Powdered milk', 'Plant-based alternatives', 'Regional suppliers'],
-        recommendedActions: ['Support affected farmers', 'Diversify supply sources', 'Quality monitoring']
-      }
-    ];
-
-    const mockForecastData: ProductionForecast[] = [
-      { month: 'Jan', normal: 100, current: 85, predicted: 78 },
-      { month: 'Feb', normal: 100, current: 82, predicted: 75 },
-      { month: 'Mar', normal: 100, current: 78, predicted: 72 },
-      { month: 'Apr', normal: 100, current: 75, predicted: 68 },
-      { month: 'May', normal: 100, current: 72, predicted: 65 },
-      { month: 'Jun', normal: 100, current: 70, predicted: 74 }
-    ];
-
-    setSupplyData(mockSupplyData);
-    setMarketImpacts(mockMarketImpacts);
-    setForecastData(mockForecastData);
+    // No mock data - all data comes from database
+    fetchRealSupplyData();
   }, [selectedProduct, timeframe]);
+
+  const fetchRealSupplyData = async () => {
+    // Fetch real supply chain data from database when available
+    // For now, show empty state
+    setSupplyData([]);
+    setMarketImpacts([]);
+    setForecastData([]);
+  };
 
   const analyzeImpact = async () => {
     setIsAnalyzing(true);
@@ -192,7 +125,16 @@ const SupplyChainImpactTracker: React.FC = () => {
           </div>
 
           {/* Supply Status Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {supplyData.length === 0 ? (
+            <div className="text-center py-12">
+              <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 className="text-lg font-semibold mb-2">No Supply Chain Data</h3>
+              <p className="text-muted-foreground">
+                Supply chain data will appear here once disease outbreaks and market impacts are tracked.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {supplyData.map((item, idx) => {
               const status = getSupplyStatus(item.currentSupply, item.demandForecast);
               return (
@@ -230,6 +172,7 @@ const SupplyChainImpactTracker: React.FC = () => {
               );
             })}
           </div>
+          )}
 
           <Tabs defaultValue="forecast" className="w-full">
             <TabsList className="grid w-full grid-cols-3">

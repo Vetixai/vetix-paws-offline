@@ -91,10 +91,7 @@ const RegionalHealthAnalytics: React.FC = () => {
           name: outbreak.disease_name,
           cases: outbreak.affected_count,
           trend: outbreak.affected_count > 100 ? 'increasing' : outbreak.affected_count > 50 ? 'stable' : 'decreasing' as 'increasing' | 'decreasing' | 'stable'
-        })) || [
-          { name: 'Foot and Mouth Disease', cases: 145, trend: 'decreasing' as const },
-          { name: 'East Coast Fever', cases: 89, trend: 'stable' as const }
-        ]
+        })) || []
       };
 
       // Generate time series from recent diagnoses
@@ -119,14 +116,7 @@ const RegionalHealthAnalytics: React.FC = () => {
       ];
 
       setMetrics(realMetrics);
-      setTimeSeriesData(realTimeSeries.length > 0 ? realTimeSeries : [
-        { month: 'Jul', healthy: 38000, sick: 1200, treated: 1100, vaccinated: 30000 },
-        { month: 'Aug', healthy: 38500, sick: 1150, treated: 1080, vaccinated: 32000 },
-        { month: 'Sep', healthy: 39000, sick: 980, treated: 950, vaccinated: 33500 },
-        { month: 'Oct', healthy: 39200, sick: 1100, treated: 1050, vaccinated: 34000 },
-        { month: 'Nov', healthy: 39100, sick: 1250, treated: 1200, vaccinated: 35000 },
-        { month: 'Dec', healthy: 39234, sick: 1346, treated: 1290, vaccinated: 36000 }
-      ]);
+      setTimeSeriesData(realTimeSeries);
       setSpeciesData(mockSpeciesData);
     } catch (error) {
       console.error('Error fetching analytics:', error);

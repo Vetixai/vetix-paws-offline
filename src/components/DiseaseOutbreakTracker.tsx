@@ -63,24 +63,6 @@ const DiseaseOutbreakTracker: React.FC = () => {
         riskFactors: outbreak.symptoms || ['High livestock density', 'Seasonal factors']
       }));
 
-      // If no real data, show examples
-      if (formattedOutbreaks.length === 0) {
-        formattedOutbreaks.push({
-          id: '1',
-          disease: 'Foot and Mouth Disease',
-          species: ['cattle', 'goat', 'sheep'],
-          location: 'Nakuru County',
-          severity: 'high',
-          caseCount: 145,
-          recoveredCount: 67,
-          deathCount: 8,
-          firstReported: '2024-01-15',
-          lastUpdated: '2024-01-20',
-          preventionMeasures: ['Quarantine affected areas', 'Vaccination campaign', 'Movement restrictions'],
-          riskFactors: ['High livestock density', 'Cross-border movement', 'Seasonal rainfall']
-        });
-      }
-
       setOutbreaks(formattedOutbreaks);
 
       // AI predictions based on current trends
