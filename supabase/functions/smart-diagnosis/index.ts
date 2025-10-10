@@ -12,22 +12,32 @@ serve(async (req) => {
   }
 
   try {
-    const { symptoms, imageBase64, animalType = 'ng\'ombe' } = await req.json();
+    const { symptoms, imageBase64, animalType = 'ng\'ombe', location } = await req.json();
 
     if (!symptoms && !imageBase64) {
       throw new Error('Either symptoms or image is required');
     }
 
+    // Build location context for AI
+    let locationContext = '';
+    if (location?.country && location?.region) {
+      locationContext = `\nLocation Context: The user is from ${location.region}, ${location.country}. Consider regional diseases, climate conditions, and local veterinary practices specific to this area when providing recommendations.`;
+    } else if (location?.country) {
+      locationContext = `\nLocation Context: The user is from ${location.country}. Consider country-specific diseases, climate, and veterinary practices.`;
+    }
+
     const messages = [
       {
         role: 'system',
-        content: `You are VetixAI, an expert veterinary diagnostic assistant for East African farming communities.
+        content: `You are VetixAI, an expert veterinary diagnostic assistant for farming communities worldwide.
         Analyze symptoms and/or images to provide preliminary diagnoses.
+        ${locationContext}
         Always include:
-        1. Possible conditions (most to least likely)
-        2. Immediate care recommendations
+        1. Possible conditions (most to least likely) - prioritize diseases common in the user's location
+        2. Immediate care recommendations suitable for the region
         3. When to seek professional veterinary help
-        4. Prevention tips
+        4. Prevention tips relevant to local conditions
+        5. Any region-specific considerations (endemic diseases, climate factors, available treatments)
         Respond in both Swahili and English for accessibility.
         IMPORTANT: Always emphasize this is preliminary guidance, not a replacement for professional veterinary care.`
       }

@@ -12,13 +12,22 @@ serve(async (req) => {
   }
 
   try {
-    const { message, conversationHistory = [] } = await req.json();
+    const { message, conversationHistory = [], location } = await req.json();
+
+    // Build location context for AI
+    let locationContext = '';
+    if (location?.country && location?.region) {
+      locationContext = `\nYou are assisting a farmer/user from ${location.region}, ${location.country}. Tailor your advice to regional diseases, climate, local veterinary practices, and available resources in this specific area.`;
+    } else if (location?.country) {
+      locationContext = `\nYou are assisting a farmer/user from ${location.country}. Consider country-specific diseases, climate, and veterinary practices.`;
+    }
 
     const messages = [
       {
         role: 'system',
-        content: `You are VetixAI, an expert veterinary assistant specializing in Swahili-speaking communities. 
+        content: `You are VetixAI, an expert veterinary assistant specializing in Swahili-speaking communities.${locationContext}
         Provide practical, culturally-sensitive advice for animal health and farming practices.
+        When relevant, mention location-specific diseases, climate considerations, and locally available treatments.
         Always emphasize when to seek professional veterinary care.
         Respond in Swahili when appropriate, with English translations when helpful.
         Keep responses concise but informative.`

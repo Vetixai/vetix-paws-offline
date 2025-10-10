@@ -93,12 +93,28 @@ export const AIChatAssistant = () => {
     setIsTyping(true);
 
     try {
+      // Get user location for context
+      let userLocation = { country: '', region: '' };
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('country, region')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile) {
+          userLocation = { country: profile.country || '', region: profile.region || '' };
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: {
           message: content,
           animalType: selectedAnimalType,
           chatHistory: messages.slice(-5), // Last 5 messages for context
-          context: 'veterinary_consultation'
+          location: userLocation
         }
       });
 

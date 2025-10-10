@@ -74,12 +74,27 @@ const IndexContent = () => {
 
   const handleSymptomsSubmit = async () => {
     try {
-      // Call AI diagnosis function
+      // Get user profile for location context
+      let userLocation = { country: '', region: '' };
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('country, region')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile) {
+          userLocation = { country: profile.country || '', region: profile.region || '' };
+        }
+      }
+
+      // Call AI diagnosis function with location context
       const { data: aiResponse, error: aiError } = await supabase.functions.invoke('smart-diagnosis', {
         body: {
           symptoms: symptoms.trim(),
           animalType: selectedSpecies,
-          language: currentLanguage
+          language: currentLanguage,
+          location: userLocation
         }
       });
 
@@ -163,42 +178,55 @@ const IndexContent = () => {
     setCurrentStep('diagnosis');
   };
 
+  const requireAuth = (action: () => void) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to access this feature",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+    action();
+  };
+
   const features = [
     {
       icon: <Stethoscope className="w-6 h-6" />,
       title: "AI Diagnosis",
       description: "Get instant health assessments for your animals using advanced AI",
-      action: handleStartDiagnosis
+      action: () => requireAuth(handleStartDiagnosis)
     },
     {
       icon: <Globe className="w-6 h-6" />,
       title: "Works Offline",
       description: "Full functionality without internet connection for remote areas",
-      action: () => setCurrentStep('offline')
+      action: () => requireAuth(() => setCurrentStep('offline'))
     },
     {
       icon: <Camera className="w-6 h-6" />,
       title: "Photo & Voice Analysis", 
       description: "Analyze conditions through photos or speak in Swahili/English",
-      action: () => {
+      action: () => requireAuth(() => {
         setShowAiFeatures(true);
         setTimeout(() => {
           const tabTrigger = document.querySelector('[value="voice-ai"]');
           if (tabTrigger) (tabTrigger as HTMLElement).click();
         }, 100);
-      }
+      })
     },
     {
       icon: <Activity className="w-6 h-6" />,
       title: "Disease Tracking",
       description: "Real-time disease monitoring and outbreak prevention",
-      action: () => setCurrentStep('outbreak')
+      action: () => requireAuth(() => setCurrentStep('outbreak'))
     },
     {
       icon: <Heart className="w-6 h-6" />,
       title: "Emergency Care",
       description: "Immediate emergency response and community health support",
-      action: () => setIsEmergency(true)
+      action: () => requireAuth(() => setIsEmergency(true))
     }
   ];
 
@@ -242,7 +270,7 @@ const IndexContent = () => {
         <Button 
           variant="default" 
           size="lg" 
-          onClick={() => setShowAiFeatures(!showAiFeatures)}
+          onClick={() => requireAuth(() => setShowAiFeatures(!showAiFeatures))}
           className="bg-blue-600 hover:bg-blue-700 text-white"
         >
           <Brain className="w-4 h-4 mr-2" />
@@ -251,7 +279,7 @@ const IndexContent = () => {
         <Button 
           variant="outline" 
           size="lg" 
-          onClick={() => setCurrentStep('outbreak')}
+          onClick={() => requireAuth(() => setCurrentStep('outbreak'))}
           className="border-blue-600 text-blue-600 hover:bg-blue-50"
         >
           <Activity className="w-4 h-4 mr-2" />
@@ -260,7 +288,7 @@ const IndexContent = () => {
         <Button 
           variant="outline" 
           size="lg" 
-          onClick={() => setCurrentStep('analytics')}
+          onClick={() => requireAuth(() => setCurrentStep('analytics'))}
           className="border-blue-600 text-blue-600 hover:bg-blue-50"
         >
           <BarChart className="w-4 h-4 mr-2" />

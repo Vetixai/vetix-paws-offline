@@ -391,6 +391,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          country: string | null
           created_at: string
           full_name: string | null
           id: string
@@ -398,12 +399,14 @@ export type Database = {
           language: Database["public"]["Enums"]["user_language"] | null
           location: string | null
           phone_number: string | null
+          region: string | null
           timezone: string | null
           updated_at: string
           user_id: string
           user_type: string | null
         }
         Insert: {
+          country?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
@@ -411,12 +414,14 @@ export type Database = {
           language?: Database["public"]["Enums"]["user_language"] | null
           location?: string | null
           phone_number?: string | null
+          region?: string | null
           timezone?: string | null
           updated_at?: string
           user_id: string
           user_type?: string | null
         }
         Update: {
+          country?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
@@ -424,6 +429,7 @@ export type Database = {
           language?: Database["public"]["Enums"]["user_language"] | null
           location?: string | null
           phone_number?: string | null
+          region?: string | null
           timezone?: string | null
           updated_at?: string
           user_id?: string

@@ -20,7 +20,8 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [location, setLocation] = useState('');
+  const [country, setCountry] = useState('');
+  const [region, setRegion] = useState('');
   const [userType, setUserType] = useState<'farmer' | 'agent' | 'veterinarian'>('farmer');
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -67,7 +68,8 @@ const Auth = () => {
           data: {
             full_name: fullName,
             phone_number: phoneNumber,
-            location: location,
+            country: country,
+            region: region,
             user_type: userType,
             language: currentLanguage,
           }
@@ -252,13 +254,25 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="location">{currentLanguage === 'en-KE' ? 'Location' : 'Mahali'}</Label>
+                  <Label htmlFor="country">{currentLanguage === 'en-KE' ? 'Country' : 'Nchi'}</Label>
                   <Input
-                    id="location"
+                    id="country"
                     type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder={currentLanguage === 'en-KE' ? 'County/District' : 'Kaunti/Wilaya'}
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    placeholder={currentLanguage === 'en-KE' ? 'e.g., Kenya, Tanzania, Uganda' : 'mfano: Kenya, Tanzania, Uganda'}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="region">{currentLanguage === 'en-KE' ? 'Region/County' : 'Mkoa/Kaunti'}</Label>
+                  <Input
+                    id="region"
+                    type="text"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    placeholder={currentLanguage === 'en-KE' ? 'e.g., Nairobi, Kilimanjaro' : 'mfano: Nairobi, Kilimanjaro'}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
