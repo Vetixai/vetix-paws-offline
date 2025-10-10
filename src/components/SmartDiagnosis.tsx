@@ -74,6 +74,22 @@ export const SmartDiagnosis = () => {
         setAnalysisProgress(prev => Math.min(prev + 10, 90));
       }, 200);
 
+      // Get user location for context
+      let userLocation = { country: '', region: '' };
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('country, region')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile) {
+          userLocation = { country: profile.country || '', region: profile.region || '' };
+        }
+      }
+
       let imageBase64 = null;
       if (selectedImage) {
         imageBase64 = await convertImageToBase64(selectedImage);
@@ -84,6 +100,7 @@ export const SmartDiagnosis = () => {
           symptoms: symptoms.trim(),
           imageBase64,
           animalType: selectedSpecies,
+          location: userLocation,
           includeAdvanced: true // Request advanced analysis
         }
       });
