@@ -26,11 +26,12 @@ import { EconomicImpactCalculator } from "@/components/EconomicImpactCalculator"
 import DiseaseOutbreakTracker from "@/components/DiseaseOutbreakTracker";
 import RegionalHealthAnalytics from "@/components/RegionalHealthAnalytics";
 import SupplyChainImpactTracker from "@/components/SupplyChainImpactTracker";
+import { FarmerDashboard } from "@/components/FarmerDashboard";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalSync } from "@/hooks/useLocalSync";
 import { supabase } from "@/integrations/supabase/client";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart } from "lucide-react";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart, LayoutDashboard } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const IndexContent = () => {
@@ -43,7 +44,7 @@ const IndexContent = () => {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply' | 'offline'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'dashboard' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply' | 'offline'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string>("");
 
@@ -270,11 +271,20 @@ const IndexContent = () => {
         <Button 
           variant="default" 
           size="lg" 
-          onClick={() => requireAuth(() => setShowAiFeatures(!showAiFeatures))}
+          onClick={() => requireAuth(() => setCurrentStep('dashboard'))}
           className="bg-blue-600 hover:bg-blue-700 text-white"
         >
+          <LayoutDashboard className="w-4 h-4 mr-2" />
+          Farm Dashboard
+        </Button>
+        <Button 
+          variant="outline" 
+          size="lg" 
+          onClick={() => requireAuth(() => setShowAiFeatures(!showAiFeatures))}
+          className="border-blue-600 text-blue-600 hover:bg-blue-50"
+        >
           <Brain className="w-4 h-4 mr-2" />
-          {showAiFeatures ? 'Hide' : 'Explore'} AI Tools
+          {showAiFeatures ? 'Hide' : 'Show'} AI Tools
         </Button>
         <Button 
           variant="outline" 
@@ -646,6 +656,16 @@ const IndexContent = () => {
         </div>
 
         {currentStep === 'welcome' && renderWelcomeScreen()}
+        {currentStep === 'dashboard' && (
+          <div className="animate-fade-in-up">
+            <FarmerDashboard />
+            <div className="flex justify-center mt-6">
+              <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+                Back to Home
+              </Button>
+            </div>
+          </div>
+        )}
         {currentStep === 'species' && renderSpeciesSelection()}
         {currentStep === 'symptoms' && renderSymptomsInput()}
         {currentStep === 'diagnosis' && renderDiagnosis()}
