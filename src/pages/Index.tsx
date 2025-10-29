@@ -27,11 +27,15 @@ import DiseaseOutbreakTracker from "@/components/DiseaseOutbreakTracker";
 import RegionalHealthAnalytics from "@/components/RegionalHealthAnalytics";
 import SupplyChainImpactTracker from "@/components/SupplyChainImpactTracker";
 import { FarmerDashboard } from "@/components/FarmerDashboard";
+import { KenyanMarketPrices } from "@/components/KenyanMarketPrices";
+import { MpesaPaymentTracker } from "@/components/MpesaPaymentTracker";
+import { KenyanWeatherWidget } from "@/components/KenyanWeatherWidget";
+import { KenyanVetDirectory } from "@/components/KenyanVetDirectory";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalSync } from "@/hooks/useLocalSync";
 import { supabase } from "@/integrations/supabase/client";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart, LayoutDashboard } from "lucide-react";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart, LayoutDashboard, DollarSign, Smartphone, Cloud } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const IndexContent = () => {
@@ -44,7 +48,7 @@ const IndexContent = () => {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isEmergency, setIsEmergency] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'dashboard' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply' | 'offline'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'dashboard' | 'species' | 'symptoms' | 'diagnosis' | 'agent' | 'calendar' | 'economics' | 'outbreak' | 'analytics' | 'supply' | 'offline' | 'kenya-tools'>('welcome');
   const [showAiFeatures, setShowAiFeatures] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string>("");
 
@@ -267,12 +271,12 @@ const IndexContent = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-3">
         <Button 
           variant="default" 
           size="lg" 
           onClick={() => requireAuth(() => setCurrentStep('dashboard'))}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           <LayoutDashboard className="w-4 h-4 mr-2" />
           Farm Dashboard
@@ -280,8 +284,17 @@ const IndexContent = () => {
         <Button 
           variant="outline" 
           size="lg" 
+          onClick={() => requireAuth(() => setCurrentStep('kenya-tools'))}
+          className="border-success text-success hover:bg-success/10"
+        >
+          <MapPin className="w-4 h-4 mr-2" />
+          Kenya Tools
+        </Button>
+        <Button 
+          variant="outline" 
+          size="lg" 
           onClick={() => requireAuth(() => setShowAiFeatures(!showAiFeatures))}
-          className="border-blue-600 text-blue-600 hover:bg-blue-50"
+          className="border-primary text-primary hover:bg-primary/10"
         >
           <Brain className="w-4 h-4 mr-2" />
           {showAiFeatures ? 'Hide' : 'Show'} AI Tools
@@ -290,19 +303,10 @@ const IndexContent = () => {
           variant="outline" 
           size="lg" 
           onClick={() => requireAuth(() => setCurrentStep('outbreak'))}
-          className="border-blue-600 text-blue-600 hover:bg-blue-50"
+          className="border-destructive text-destructive hover:bg-destructive/10"
         >
           <Activity className="w-4 h-4 mr-2" />
           Disease Tracker
-        </Button>
-        <Button 
-          variant="outline" 
-          size="lg" 
-          onClick={() => requireAuth(() => setCurrentStep('analytics'))}
-          className="border-blue-600 text-blue-600 hover:bg-blue-50"
-        >
-          <BarChart className="w-4 h-4 mr-2" />
-          Analytics
         </Button>
       </div>
 
@@ -535,6 +539,34 @@ const IndexContent = () => {
     </div>
   );
 
+  const renderKenyaTools = () => (
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold mb-2">
+          {currentLanguage === 'sw-KE' ? 'Zana za Kenya' : 'Kenya Tools'}
+        </h2>
+        <p className="text-muted-foreground">
+          {currentLanguage === 'sw-KE' 
+            ? 'Huduma maalum za wakulima wa Kenya' 
+            : 'Tools specifically for Kenyan farmers'}
+        </p>
+      </div>
+      
+      <div className="grid lg:grid-cols-2 gap-6">
+        <KenyanWeatherWidget />
+        <KenyanMarketPrices />
+        <MpesaPaymentTracker />
+        <KenyanVetDirectory />
+      </div>
+
+      <div className="flex justify-center">
+        <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
+          {currentLanguage === 'sw-KE' ? 'Rudi Nyumbani' : 'Back to Home'}
+        </Button>
+      </div>
+    </div>
+  );
+
   const renderOffline = () => (
     <div className="animate-fade-in-up space-y-6">
       <div className="text-center">
@@ -675,6 +707,7 @@ const IndexContent = () => {
         {currentStep === 'outbreak' && renderOutbreak()}
         {currentStep === 'analytics' && renderAnalytics()}
         {currentStep === 'supply' && renderSupplyChain()}
+        {currentStep === 'kenya-tools' && renderKenyaTools()}
         {currentStep === 'offline' && renderOffline()}
       </div>
     </div>
