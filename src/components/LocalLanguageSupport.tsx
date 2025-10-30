@@ -222,13 +222,30 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   };
 
   const translate = (key: string): string => {
-    return TRANSLATIONS[currentLanguage as keyof typeof TRANSLATIONS]?.[key as keyof typeof TRANSLATIONS['sw-KE']] || 
-           TRANSLATIONS['en-KE'][key as keyof typeof TRANSLATIONS['en-KE']] || 
-           key;
+    const langTranslations = TRANSLATIONS[currentLanguage as keyof typeof TRANSLATIONS];
+    if (langTranslations && key in langTranslations) {
+      return langTranslations[key as keyof typeof langTranslations] as string;
+    }
+    // Fallback to English
+    const enTranslations = TRANSLATIONS['en-KE'];
+    if (key in enTranslations) {
+      return enTranslations[key as keyof typeof enTranslations] as string;
+    }
+    // Return key if translation not found
+    return key;
   };
 
   const getAnimalTerm = (animal: string): string => {
-    return SUPPORTED_LANGUAGES[currentLanguage as keyof typeof SUPPORTED_LANGUAGES]?.animalTerms[animal as keyof typeof SUPPORTED_LANGUAGES['sw-KE']['animalTerms']] || animal;
+    const langInfo = SUPPORTED_LANGUAGES[currentLanguage as keyof typeof SUPPORTED_LANGUAGES];
+    if (langInfo && animal in langInfo.animalTerms) {
+      return langInfo.animalTerms[animal as keyof typeof langInfo.animalTerms];
+    }
+    // Fallback to English
+    const enInfo = SUPPORTED_LANGUAGES['en-KE'];
+    if (animal in enInfo.animalTerms) {
+      return enInfo.animalTerms[animal as keyof typeof enInfo.animalTerms];
+    }
+    return animal;
   };
 
   const isRTL = false; // None of our supported languages are RTL
