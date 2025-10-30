@@ -108,7 +108,20 @@ export const TRANSLATIONS = {
     feedingGuide: 'Mwongozo wa Kulisha',
     breedingTips: 'Ushauri wa Uzazi',
     weatherAlert: 'Tahadhari ya Hali ya Anga',
-    marketPrices: 'Bei za Soko'
+    marketPrices: 'Bei za Soko',
+    signIn: 'Ingia',
+    signUp: 'Jisajili',
+    email: 'Barua pepe',
+    password: 'Nenosiri',
+    fullName: 'Jina kamili',
+    phoneNumber: 'Nambari ya simu',
+    country: 'Nchi',
+    region: 'Mkoa/Kaunti',
+    userType: 'Aina ya mtumiaji',
+    aiAssistant: 'Msaada wa AI kwa afya ya wanyamapori',
+    farmer: 'Mfugaji',
+    agent: 'Wakala wa jamii',
+    veterinarian: 'Daktari wa wanyamapori'
   },
   'sw-TZ': {
     welcome: 'Karibu Vetix AI',
@@ -144,7 +157,20 @@ export const TRANSLATIONS = {
     feedingGuide: 'Feeding Guide',
     breedingTips: 'Breeding Tips',
     weatherAlert: 'Weather Alert',
-    marketPrices: 'Market Prices'
+    marketPrices: 'Market Prices',
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
+    email: 'Email',
+    password: 'Password',
+    fullName: 'Full Name',
+    phoneNumber: 'Phone Number',
+    country: 'Country',
+    region: 'Region/County',
+    userType: 'User Type',
+    aiAssistant: 'AI-powered animal health assistant',
+    farmer: 'Farmer',
+    agent: 'Community Agent',
+    veterinarian: 'Veterinarian'
   },
   'luo': {
     welcome: 'Warore e Vetix AI',
@@ -162,7 +188,20 @@ export const TRANSLATIONS = {
     feedingGuide: 'Puonj mar chiemo',
     breedingTips: 'Puonj mar nyuol',
     weatherAlert: 'Siem mar koth',
-    marketPrices: 'Nengo mag ohala'
+    marketPrices: 'Nengo mag ohala',
+    signIn: 'Donj',
+    signUp: 'Ndikori',
+    email: 'Email',
+    password: 'Nying donjo',
+    fullName: 'Nyingi duto',
+    phoneNumber: 'Namba simu',
+    country: 'Piny',
+    region: 'Gwengʼ',
+    userType: 'Kit ngʼat',
+    aiAssistant: 'Kony mar AI ne ngima le',
+    farmer: 'Japuodho',
+    agent: 'Jakony mar oganda',
+    veterinarian: 'Jathieth le'
   },
   'kik': {
     welcome: 'Wĩra Vetix AI-inĩ',
@@ -180,7 +219,20 @@ export const TRANSLATIONS = {
     feedingGuide: 'Mũtongoria wa kũheana irio',
     breedingTips: 'Mataaro ma gũciarithia',
     weatherAlert: 'Gĩtaarĩko gĩa rũhuho',
-    marketPrices: 'Thoguo cia ndũrĩrĩ'
+    marketPrices: 'Thoguo cia ndũrĩrĩ',
+    signIn: 'Toonya',
+    signUp: 'Ĩyandĩkithie',
+    email: 'Marũa ma email',
+    password: 'Namba ya gũtoonya',
+    fullName: 'Rĩĩtwa rĩaku rĩothe',
+    phoneNumber: 'Namba ya ciumbi',
+    country: 'Bũrũri',
+    region: 'Kaunti',
+    userType: 'Mũhũthũri wa mũrĩmo',
+    aiAssistant: 'Ũteithio wa AI kũrĩ ũgima wa nyamũ',
+    farmer: 'Mũrĩmi',
+    agent: 'Mũrũthia wa mũgunda',
+    veterinarian: 'Muganga wa nyamũ'
   }
 };
 

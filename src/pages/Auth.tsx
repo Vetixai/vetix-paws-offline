@@ -166,20 +166,20 @@ const Auth = () => {
           </div>
           <CardTitle className="text-2xl font-bold">Vetix AI</CardTitle>
           <CardDescription>
-            {currentLanguage === 'en-KE' ? 'AI-powered animal health assistant' : 'Msaada wa AI kwa afya ya wanyamapori'}
+            {translate('aiAssistant')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">{currentLanguage === 'en-KE' ? 'Sign In' : 'Ingia'}</TabsTrigger>
-              <TabsTrigger value="signup">{currentLanguage === 'en-KE' ? 'Sign Up' : 'Jisajili'}</TabsTrigger>
+              <TabsTrigger value="signin">{translate('signIn')}</TabsTrigger>
+              <TabsTrigger value="signup">{translate('signUp')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">{currentLanguage === 'en-KE' ? 'Email' : 'Barua pepe'}</Label>
+                  <Label htmlFor="signin-email">{translate('email')}</Label>
                   <Input
                     id="signin-email"
                     type="email"
@@ -190,7 +190,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">{currentLanguage === 'en-KE' ? 'Password' : 'Nenosiri'}</Label>
+                  <Label htmlFor="signin-password">{translate('password')}</Label>
                   <Input
                     id="signin-password"
                     type="password"
@@ -202,7 +202,7 @@ const Auth = () => {
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {currentLanguage === 'en-KE' ? 'Sign In' : 'Ingia'}
+                  {translate('signIn')}
                 </Button>
               </form>
             </TabsContent>
@@ -210,7 +210,7 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">{currentLanguage === 'en-KE' ? 'Full Name' : 'Jina kamili'}</Label>
+                  <Label htmlFor="signup-name">{translate('fullName')}</Label>
                   <Input
                     id="signup-name"
                     type="text"
@@ -221,7 +221,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">{currentLanguage === 'en-KE' ? 'Email' : 'Barua pepe'}</Label>
+                  <Label htmlFor="signup-email">{translate('email')}</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -232,7 +232,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">{currentLanguage === 'en-KE' ? 'Password' : 'Nenosiri'}</Label>
+                  <Label htmlFor="signup-password">{translate('password')}</Label>
                   <Input
                     id="signup-password"
                     type="password"
@@ -244,7 +244,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">{currentLanguage === 'en-KE' ? 'Phone Number' : 'Nambari ya simu'}</Label>
+                  <Label htmlFor="phone">{translate('phoneNumber')}</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -254,7 +254,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="country">{currentLanguage === 'en-KE' ? 'Country' : 'Nchi'}</Label>
+                  <Label htmlFor="country">{translate('country')}</Label>
                   <Input
                     id="country"
                     type="text"
@@ -265,7 +265,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="region">{currentLanguage === 'en-KE' ? 'Region/County' : 'Mkoa/Kaunti'}</Label>
+                  <Label htmlFor="region">{translate('region')}</Label>
                   <Input
                     id="region"
                     type="text"
@@ -276,21 +276,21 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="user-type">{currentLanguage === 'en-KE' ? 'User Type' : 'Aina ya mtumiaji'}</Label>
+                  <Label htmlFor="user-type">{translate('userType')}</Label>
                   <Select value={userType} onValueChange={(value: 'farmer' | 'agent' | 'veterinarian') => setUserType(value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder={currentLanguage === 'en-KE' ? 'Select user type' : 'Chagua aina ya mtumiaji'} />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="farmer">{currentLanguage === 'en-KE' ? 'Farmer' : 'Mfugaji'}</SelectItem>
-                      <SelectItem value="agent">{currentLanguage === 'en-KE' ? 'Community Agent' : 'Wakala wa jamii'}</SelectItem>
-                      <SelectItem value="veterinarian">{currentLanguage === 'en-KE' ? 'Veterinarian' : 'Daktari wa wanyamapori'}</SelectItem>
+                      <SelectItem value="farmer">{translate('farmer')}</SelectItem>
+                      <SelectItem value="agent">{translate('agent')}</SelectItem>
+                      <SelectItem value="veterinarian">{translate('veterinarian')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {currentLanguage === 'en-KE' ? 'Sign Up' : 'Jisajili'}
+                  {translate('signUp')}
                 </Button>
               </form>
             </TabsContent>
