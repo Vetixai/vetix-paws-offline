@@ -138,7 +138,7 @@ export type Database = {
           affected_count: number | null
           animal_type: Database["public"]["Enums"]["animal_type"]
           containment_measures: string[] | null
-          coordinates: unknown | null
+          coordinates: unknown
           created_at: string | null
           description: string | null
           disease_name: string
@@ -158,7 +158,7 @@ export type Database = {
           affected_count?: number | null
           animal_type: Database["public"]["Enums"]["animal_type"]
           containment_measures?: string[] | null
-          coordinates?: unknown | null
+          coordinates?: unknown
           created_at?: string | null
           description?: string | null
           disease_name: string
@@ -178,7 +178,7 @@ export type Database = {
           affected_count?: number | null
           animal_type?: Database["public"]["Enums"]["animal_type"]
           containment_measures?: string[] | null
-          coordinates?: unknown | null
+          coordinates?: unknown
           created_at?: string | null
           description?: string | null
           disease_name?: string

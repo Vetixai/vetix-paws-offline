@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { diagnosisSchema, animalSchema, outbreakSchema } from '@/lib/validation';
 
 export const useVetixDataService = () => {
   const { user } = useAuth();
@@ -11,6 +12,23 @@ export const useVetixDataService = () => {
       toast({
         title: "Authentication required",
         description: "Please sign in to save diagnoses",
+        variant: "destructive"
+      });
+      return null;
+    }
+
+    // Validate input
+    try {
+      diagnosisSchema.parse({
+        symptoms: diagnosisData.symptoms,
+        species: diagnosisData.species,
+        location: diagnosisData.location,
+        urgency_level: diagnosisData.urgency_level
+      });
+    } catch (error: any) {
+      toast({
+        title: "Invalid input",
+        description: error.errors?.[0]?.message || "Please check your input",
         variant: "destructive"
       });
       return null;
@@ -82,6 +100,18 @@ export const useVetixDataService = () => {
       return null;
     }
 
+    // Validate input
+    try {
+      animalSchema.parse(animalData);
+    } catch (error: any) {
+      toast({
+        title: "Invalid input",
+        description: error.errors?.[0]?.message || "Please check your input",
+        variant: "destructive"
+      });
+      return null;
+    }
+
     try {
       const { data, error } = await supabase
         .from('animals')
@@ -144,6 +174,28 @@ export const useVetixDataService = () => {
       toast({
         title: "Authentication required",
         description: "Please sign in to report outbreaks",
+        variant: "destructive"
+      });
+      return null;
+    }
+
+    // Validate input
+    try {
+      outbreakSchema.parse({
+        disease_name: outbreakData.disease_name,
+        animal_type: outbreakData.animal_type,
+        location: outbreakData.location,
+        region: outbreakData.region,
+        affected_count: outbreakData.affected_count,
+        mortality_count: outbreakData.mortality_count,
+        severity: outbreakData.severity,
+        symptoms: outbreakData.symptoms,
+        description: outbreakData.description
+      });
+    } catch (error: any) {
+      toast({
+        title: "Invalid input",
+        description: error.errors?.[0]?.message || "Please check your input",
         variant: "destructive"
       });
       return null;

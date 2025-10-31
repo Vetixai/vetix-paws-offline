@@ -8,6 +8,7 @@ import { Camera, Upload, Stethoscope, Loader2, Brain, AlertTriangle, Calendar, C
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { SpeciesSelector } from './SpeciesSelector';
+import { diagnosisSchema } from '@/lib/validation';
 
 interface DiagnosisResult {
   diagnosis: string;
@@ -63,6 +64,19 @@ export const SmartDiagnosis = () => {
     if (!symptoms.trim() && !selectedImage) {
       toast.error('Tafadhali andika dalili au chagua picha / Please describe symptoms or select an image');
       return;
+    }
+
+    // Validate symptoms if provided
+    if (symptoms.trim()) {
+      try {
+        diagnosisSchema.parse({
+          symptoms: symptoms.trim(),
+          species: selectedSpecies
+        });
+      } catch (error: any) {
+        toast.error(error.errors?.[0]?.message || 'Invalid input');
+        return;
+      }
     }
 
     setIsAnalyzing(true);

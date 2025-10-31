@@ -8,6 +8,7 @@ import { Phone, Plus, Trash2, Edit2, Save, X, MapPin, User } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { emergencyContactSchema } from "@/lib/validation";
 
 interface EmergencyContact {
   id: string;
@@ -76,10 +77,13 @@ export const EmergencyContacts = () => {
       return;
     }
 
-    if (!formData.name || !formData.phone_number) {
+    // Validate input
+    try {
+      emergencyContactSchema.parse(formData);
+    } catch (error: any) {
       toast({
-        title: "Taarifa pungufu",
-        description: "Jaza jina na nambari ya simu",
+        title: "Taarifa si sahihi",
+        description: error.errors?.[0]?.message || "Please check your input",
         variant: "destructive",
       });
       return;
