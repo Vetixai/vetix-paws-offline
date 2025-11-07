@@ -133,6 +133,81 @@ export type Database = {
           },
         ]
       }
+      disease_knowledge: {
+        Row: {
+          animal_types: string[]
+          causes: string
+          common_symptoms: string[]
+          created_at: string | null
+          diagnostic_tests: string[] | null
+          differential_diagnoses: string[] | null
+          disease_name: string
+          economic_impact: string | null
+          id: string
+          incubation_period: string | null
+          last_updated: string | null
+          mortality_rate: string | null
+          prevention_measures: string[]
+          regional_prevalence: Json | null
+          reportable: boolean | null
+          seasonal_pattern: string | null
+          severity: string
+          source_url: string | null
+          transmission_method: string | null
+          treatment_protocol: string
+          vaccination_available: boolean | null
+          zoonotic: boolean | null
+        }
+        Insert: {
+          animal_types: string[]
+          causes: string
+          common_symptoms: string[]
+          created_at?: string | null
+          diagnostic_tests?: string[] | null
+          differential_diagnoses?: string[] | null
+          disease_name: string
+          economic_impact?: string | null
+          id?: string
+          incubation_period?: string | null
+          last_updated?: string | null
+          mortality_rate?: string | null
+          prevention_measures: string[]
+          regional_prevalence?: Json | null
+          reportable?: boolean | null
+          seasonal_pattern?: string | null
+          severity: string
+          source_url?: string | null
+          transmission_method?: string | null
+          treatment_protocol: string
+          vaccination_available?: boolean | null
+          zoonotic?: boolean | null
+        }
+        Update: {
+          animal_types?: string[]
+          causes?: string
+          common_symptoms?: string[]
+          created_at?: string | null
+          diagnostic_tests?: string[] | null
+          differential_diagnoses?: string[] | null
+          disease_name?: string
+          economic_impact?: string | null
+          id?: string
+          incubation_period?: string | null
+          last_updated?: string | null
+          mortality_rate?: string | null
+          prevention_measures?: string[]
+          regional_prevalence?: Json | null
+          reportable?: boolean | null
+          seasonal_pattern?: string | null
+          severity?: string
+          source_url?: string | null
+          transmission_method?: string | null
+          treatment_protocol?: string
+          vaccination_available?: boolean | null
+          zoonotic?: boolean | null
+        }
+        Relationships: []
+      }
       disease_outbreaks: {
         Row: {
           affected_count: number | null
@@ -285,6 +360,114 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_procedures: {
+        Row: {
+          animal_types: string[]
+          call_vet_immediately: boolean | null
+          created_at: string | null
+          do_not_do: string[] | null
+          emergency_type: string
+          id: string
+          immediate_actions: string[]
+          immediate_signs: string[]
+          prevention_tips: string[] | null
+          source_url: string | null
+          step_by_step_guide: string[] | null
+          supplies_needed: string[] | null
+          time_sensitive_minutes: number | null
+          when_critical: boolean | null
+        }
+        Insert: {
+          animal_types: string[]
+          call_vet_immediately?: boolean | null
+          created_at?: string | null
+          do_not_do?: string[] | null
+          emergency_type: string
+          id?: string
+          immediate_actions: string[]
+          immediate_signs: string[]
+          prevention_tips?: string[] | null
+          source_url?: string | null
+          step_by_step_guide?: string[] | null
+          supplies_needed?: string[] | null
+          time_sensitive_minutes?: number | null
+          when_critical?: boolean | null
+        }
+        Update: {
+          animal_types?: string[]
+          call_vet_immediately?: boolean | null
+          created_at?: string | null
+          do_not_do?: string[] | null
+          emergency_type?: string
+          id?: string
+          immediate_actions?: string[]
+          immediate_signs?: string[]
+          prevention_tips?: string[] | null
+          source_url?: string | null
+          step_by_step_guide?: string[] | null
+          supplies_needed?: string[] | null
+          time_sensitive_minutes?: number | null
+          when_critical?: boolean | null
+        }
+        Relationships: []
+      }
+      farming_best_practices: {
+        Row: {
+          animal_types: string[]
+          benefits: string[] | null
+          category: string
+          climate_considerations: string[] | null
+          common_mistakes: string[] | null
+          cost_implication: string | null
+          created_at: string | null
+          description: string
+          id: string
+          implementation_steps: string[] | null
+          practice_title: string
+          regional_adaptations: Json | null
+          roi_timeframe: string | null
+          source_url: string | null
+          success_stories: string | null
+          suitable_for_smallholder: boolean | null
+        }
+        Insert: {
+          animal_types: string[]
+          benefits?: string[] | null
+          category: string
+          climate_considerations?: string[] | null
+          common_mistakes?: string[] | null
+          cost_implication?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          implementation_steps?: string[] | null
+          practice_title: string
+          regional_adaptations?: Json | null
+          roi_timeframe?: string | null
+          source_url?: string | null
+          success_stories?: string | null
+          suitable_for_smallholder?: boolean | null
+        }
+        Update: {
+          animal_types?: string[]
+          benefits?: string[] | null
+          category?: string
+          climate_considerations?: string[] | null
+          common_mistakes?: string[] | null
+          cost_implication?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          implementation_steps?: string[] | null
+          practice_title?: string
+          regional_adaptations?: Json | null
+          roi_timeframe?: string | null
+          source_url?: string | null
+          success_stories?: string | null
+          suitable_for_smallholder?: boolean | null
+        }
+        Relationships: []
+      }
       health_reports: {
         Row: {
           animal_counts: Json | null
@@ -339,6 +522,81 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           vaccination_coverage?: number | null
+        }
+        Relationships: []
+      }
+      medication_knowledge: {
+        Row: {
+          administration_route: string
+          approximate_cost_ksh: string | null
+          available_in_kenya: boolean | null
+          contraindications: string[] | null
+          created_at: string | null
+          dosage_formula: string
+          drug_class: string
+          duration: string | null
+          frequency: string
+          generic_name: string | null
+          id: string
+          medication_name: string
+          prescription_required: boolean | null
+          side_effects: string[] | null
+          source_url: string | null
+          storage_conditions: string | null
+          target_animals: string[]
+          target_conditions: string[]
+          updated_at: string | null
+          warnings: string[] | null
+          withdrawal_period_meat: string | null
+          withdrawal_period_milk: string | null
+        }
+        Insert: {
+          administration_route: string
+          approximate_cost_ksh?: string | null
+          available_in_kenya?: boolean | null
+          contraindications?: string[] | null
+          created_at?: string | null
+          dosage_formula: string
+          drug_class: string
+          duration?: string | null
+          frequency: string
+          generic_name?: string | null
+          id?: string
+          medication_name: string
+          prescription_required?: boolean | null
+          side_effects?: string[] | null
+          source_url?: string | null
+          storage_conditions?: string | null
+          target_animals: string[]
+          target_conditions: string[]
+          updated_at?: string | null
+          warnings?: string[] | null
+          withdrawal_period_meat?: string | null
+          withdrawal_period_milk?: string | null
+        }
+        Update: {
+          administration_route?: string
+          approximate_cost_ksh?: string | null
+          available_in_kenya?: boolean | null
+          contraindications?: string[] | null
+          created_at?: string | null
+          dosage_formula?: string
+          drug_class?: string
+          duration?: string | null
+          frequency?: string
+          generic_name?: string | null
+          id?: string
+          medication_name?: string
+          prescription_required?: boolean | null
+          side_effects?: string[] | null
+          source_url?: string | null
+          storage_conditions?: string | null
+          target_animals?: string[]
+          target_conditions?: string[]
+          updated_at?: string | null
+          warnings?: string[] | null
+          withdrawal_period_meat?: string | null
+          withdrawal_period_milk?: string | null
         }
         Relationships: []
       }
@@ -437,6 +695,126 @@ export type Database = {
         }
         Relationships: []
       }
+      regional_disease_alerts: {
+        Row: {
+          affected_regions: string[]
+          alert_level: string
+          animal_types: string[]
+          case_count: number | null
+          control_measures: string[] | null
+          created_at: string | null
+          disease_name: string
+          farmer_recommendations: string[] | null
+          id: string
+          last_updated: string | null
+          mortality_count: number | null
+          official_source: string | null
+          reported_date: string
+          source_url: string | null
+          status: string
+        }
+        Insert: {
+          affected_regions: string[]
+          alert_level: string
+          animal_types: string[]
+          case_count?: number | null
+          control_measures?: string[] | null
+          created_at?: string | null
+          disease_name: string
+          farmer_recommendations?: string[] | null
+          id?: string
+          last_updated?: string | null
+          mortality_count?: number | null
+          official_source?: string | null
+          reported_date: string
+          source_url?: string | null
+          status?: string
+        }
+        Update: {
+          affected_regions?: string[]
+          alert_level?: string
+          animal_types?: string[]
+          case_count?: number | null
+          control_measures?: string[] | null
+          created_at?: string | null
+          disease_name?: string
+          farmer_recommendations?: string[] | null
+          id?: string
+          last_updated?: string | null
+          mortality_count?: number | null
+          official_source?: string | null
+          reported_date?: string
+          source_url?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      treatment_protocols: {
+        Row: {
+          animal_types: string[]
+          complications_to_watch: string[] | null
+          condition_treated: string
+          cost_estimate_ksh: string | null
+          created_at: string | null
+          estimated_duration: string | null
+          follow_up_care: string[] | null
+          id: string
+          medications_needed: string[] | null
+          protocol_name: string
+          required_materials: string[] | null
+          skill_level_required: string | null
+          source_url: string | null
+          step_by_step_procedure: string[]
+          success_rate: string | null
+          updated_at: string | null
+          urgency_level: string
+          video_url: string | null
+          when_to_call_vet: string[] | null
+        }
+        Insert: {
+          animal_types: string[]
+          complications_to_watch?: string[] | null
+          condition_treated: string
+          cost_estimate_ksh?: string | null
+          created_at?: string | null
+          estimated_duration?: string | null
+          follow_up_care?: string[] | null
+          id?: string
+          medications_needed?: string[] | null
+          protocol_name: string
+          required_materials?: string[] | null
+          skill_level_required?: string | null
+          source_url?: string | null
+          step_by_step_procedure: string[]
+          success_rate?: string | null
+          updated_at?: string | null
+          urgency_level: string
+          video_url?: string | null
+          when_to_call_vet?: string[] | null
+        }
+        Update: {
+          animal_types?: string[]
+          complications_to_watch?: string[] | null
+          condition_treated?: string
+          cost_estimate_ksh?: string | null
+          created_at?: string | null
+          estimated_duration?: string | null
+          follow_up_care?: string[] | null
+          id?: string
+          medications_needed?: string[] | null
+          protocol_name?: string
+          required_materials?: string[] | null
+          skill_level_required?: string | null
+          source_url?: string | null
+          step_by_step_procedure?: string[]
+          success_rate?: string | null
+          updated_at?: string | null
+          urgency_level?: string
+          video_url?: string | null
+          when_to_call_vet?: string[] | null
+        }
+        Relationships: []
+      }
       treatments: {
         Row: {
           administered_by: string | null
@@ -511,6 +889,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vaccination_schedules: {
+        Row: {
+          administration_method: string | null
+          age_at_first_dose: string
+          animal_type: string
+          booster_frequency: string | null
+          cost_range_ksh: string | null
+          created_at: string | null
+          critical_priority: string
+          disease_prevention: string
+          id: string
+          interval_between_doses: string | null
+          notes: string | null
+          number_of_doses: number
+          regional_requirement: string | null
+          season_recommended: string[] | null
+          source_url: string | null
+          storage_temperature: string | null
+          updated_at: string | null
+          vaccine_name: string
+        }
+        Insert: {
+          administration_method?: string | null
+          age_at_first_dose: string
+          animal_type: string
+          booster_frequency?: string | null
+          cost_range_ksh?: string | null
+          created_at?: string | null
+          critical_priority: string
+          disease_prevention: string
+          id?: string
+          interval_between_doses?: string | null
+          notes?: string | null
+          number_of_doses?: number
+          regional_requirement?: string | null
+          season_recommended?: string[] | null
+          source_url?: string | null
+          storage_temperature?: string | null
+          updated_at?: string | null
+          vaccine_name: string
+        }
+        Update: {
+          administration_method?: string | null
+          age_at_first_dose?: string
+          animal_type?: string
+          booster_frequency?: string | null
+          cost_range_ksh?: string | null
+          created_at?: string | null
+          critical_priority?: string
+          disease_prevention?: string
+          id?: string
+          interval_between_doses?: string | null
+          notes?: string | null
+          number_of_doses?: number
+          regional_requirement?: string | null
+          season_recommended?: string[] | null
+          source_url?: string | null
+          storage_temperature?: string | null
+          updated_at?: string | null
+          vaccine_name?: string
+        }
+        Relationships: []
       }
       vaccinations: {
         Row: {
