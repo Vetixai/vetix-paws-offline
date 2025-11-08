@@ -47,6 +47,16 @@ serve(async (req) => {
       throw new Error('No audio data provided');
     }
 
+    // Server-side input validation
+    const sizeInBytes = (audio.length * 3) / 4;
+    if (sizeInBytes > 10 * 1024 * 1024) {
+      throw new Error('Audio file too large (max 10MB)');
+    }
+    const validLanguages = ['sw', 'en', 'af', 'ar', 'fr', 'es'];
+    if (language && !validLanguages.includes(language)) {
+      throw new Error('Invalid language code');
+    }
+
     // Process audio in chunks
     const binaryAudio = processBase64Chunks(audio);
     

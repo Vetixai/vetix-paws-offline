@@ -18,6 +18,15 @@ serve(async (req) => {
       throw new Error('Prompt is required');
     }
 
+    // Server-side input validation
+    if (typeof prompt !== 'string' || prompt.length > 1000) {
+      throw new Error('Prompt must be a string with max 1000 characters');
+    }
+    const validSizes = ['256x256', '512x512', '1024x1024', '1792x1024', '1024x1792'];
+    if (!validSizes.includes(size)) {
+      throw new Error('Invalid image size');
+    }
+
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {

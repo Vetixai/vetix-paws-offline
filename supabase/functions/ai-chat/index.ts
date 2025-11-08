@@ -14,6 +14,17 @@ serve(async (req) => {
   try {
     const { message, conversationHistory = [], location } = await req.json();
 
+    // Server-side input validation
+    if (!message || typeof message !== 'string') {
+      throw new Error('Message is required and must be a string');
+    }
+    if (message.length > 2000) {
+      throw new Error('Message too long (max 2000 characters)');
+    }
+    if (conversationHistory.length > 10) {
+      throw new Error('Conversation history too long (max 10 messages)');
+    }
+
     // Build location context for AI
     let locationContext = '';
     if (location?.country && location?.region) {

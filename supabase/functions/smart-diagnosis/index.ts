@@ -18,6 +18,21 @@ serve(async (req) => {
       throw new Error('Either symptoms or image is required');
     }
 
+    // Server-side input validation
+    if (symptoms && symptoms.length > 2000) {
+      throw new Error('Symptoms description too long (max 2000 characters)');
+    }
+    if (imageBase64) {
+      const sizeInBytes = (imageBase64.length * 3) / 4;
+      if (sizeInBytes > 10 * 1024 * 1024) {
+        throw new Error('Image too large (max 10MB)');
+      }
+    }
+    const validAnimals = ['ng\'ombe', 'mbuzi', 'kondoo', 'kuku', 'nguruwe', 'cattle', 'goat', 'sheep', 'chicken', 'pig'];
+    if (animalType && !validAnimals.includes(animalType.toLowerCase())) {
+      throw new Error('Invalid animal type');
+    }
+
     // Build location context for AI
     let locationContext = '';
     if (location?.country && location?.region) {
