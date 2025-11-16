@@ -36,7 +36,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalSync } from "@/hooks/useLocalSync";
 import { supabase } from "@/integrations/supabase/client";
-import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart, LayoutDashboard, DollarSign, Smartphone, Cloud } from "lucide-react";
+import { Stethoscope, Camera, MessageSquare, MapPin, Globe, Heart, Mic, Users, LogIn, LogOut, User, Brain, Image, AlertTriangle, TrendingUp, Calendar, Activity, BarChart, LayoutDashboard, DollarSign, Smartphone, Cloud, Settings as SettingsIcon } from "lucide-react";
 import heroImage from "@/assets/vetix-hero.jpg";
 
 const IndexContent = () => {
@@ -676,6 +676,15 @@ const IndexContent = () => {
                   </>
                 )}
               </Button>
+
+              {/* Settings Button */}
+              {user && (
+                <Link to="/settings">
+                  <Button variant="ghost" size="sm">
+                    <SettingsIcon className="h-4 w-4" />
+                  </Button>
+                </Link>
+              )}
 
               {loading ? (
                 <div className="h-9 w-20 bg-muted animate-pulse rounded" />
