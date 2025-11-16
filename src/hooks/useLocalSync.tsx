@@ -170,6 +170,14 @@ export const useLocalSync = () => {
     setSyncStatus('syncing');
     
     try {
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('Not authenticated, skipping sync');
+        setSyncStatus('idle');
+        return;
+      }
+
       // Sync diagnosis records first
       const transaction = db.transaction(['diagnoses'], 'readwrite');
       const store = transaction.objectStore('diagnoses');
@@ -180,20 +188,36 @@ export const useLocalSync = () => {
         const allRecords = unsyncedRequest.result;
         const unsynced = allRecords.filter(record => !record.synced);
         
+        let successCount = 0;
+        
         for (const record of unsynced) {
           try {
-            // Here you would normally insert into Supabase
-            // For now, we'll just mark as synced
-            console.log('Syncing diagnosis:', record);
+            // Sync to Supabase
+            const { error } = await supabase
+              .from('diagnoses')
+              .insert({
+                user_id: user.id,
+                species: record.species,
+                symptoms: record.symptoms,
+                diagnosis_result: record.diagnosis,
+                confidence_score: 0.85,
+                urgency_level: 'medium',
+                is_emergency: false,
+                language: 'en-KE'
+              });
+            
+            if (error) throw error;
             
             // Mark as synced
             record.synced = true;
             store.put(record);
+            successCount++;
           } catch (error) {
             console.error('Failed to sync record:', error);
           }
         }
         
+        console.log(`Synced ${successCount}/${unsynced.length} diagnoses`);
         setSyncStatus('idle');
       };
       

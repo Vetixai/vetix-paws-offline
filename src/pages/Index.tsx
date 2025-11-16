@@ -656,14 +656,34 @@ const IndexContent = () => {
               <span className="font-bold text-lg">Vetix AI</span>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              {/* Sync Status Button */}
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setCurrentStep('offline')}
+                className="gap-2"
+              >
+                {isOnline ? (
+                  <>
+                    <Cloud className="h-4 w-4 text-green-600" />
+                    <span className="hidden sm:inline text-xs">Online</span>
+                  </>
+                ) : (
+                  <>
+                    <Cloud className="h-4 w-4 text-orange-600" />
+                    <span className="hidden sm:inline text-xs">Offline</span>
+                  </>
+                )}
+              </Button>
+
               {loading ? (
                 <div className="h-9 w-20 bg-muted animate-pulse rounded" />
               ) : user ? (
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <User className="h-4 w-4" />
-                    <span>{user.email}</span>
+                    <span className="hidden sm:inline">{user.email}</span>
                   </div>
                   <Button variant="outline" size="sm" onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-1" />
@@ -684,8 +704,9 @@ const IndexContent = () => {
       </header>
       
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+        <div className="mb-6 space-y-4">
           <EmergencyMode />
+          {user && <SyncManager />}
         </div>
 
         {currentStep === 'welcome' && renderWelcomeScreen()}
