@@ -24,7 +24,8 @@ import {
   AlertTriangle,
   Settings as SettingsIcon,
   Download,
-  Shield
+  Shield,
+  Activity
 } from 'lucide-react';
 
 interface OfflineSettings {
@@ -424,15 +425,26 @@ const Settings = () => {
 
               <Separator />
 
-              <Button 
-                onClick={handleClearOfflineData}
-                disabled={isClearing}
-                variant="destructive"
-                className="w-full"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                {isClearing ? 'Clearing...' : 'Clear All Offline Data'}
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={() => navigate('/diagnostics')}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Activity className="h-4 w-4 mr-2" />
+                  View Detailed Diagnostics
+                </Button>
+
+                <Button 
+                  onClick={handleClearOfflineData}
+                  disabled={isClearing}
+                  variant="destructive"
+                  className="w-full"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {isClearing ? 'Clearing...' : 'Clear All Offline Data'}
+                </Button>
+              </div>
               
               <p className="text-xs text-center text-muted-foreground">
                 This will permanently delete all locally stored data
