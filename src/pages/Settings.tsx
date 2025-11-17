@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocalSync } from '@/hooks/useLocalSync';
-import { 
+import { useConflictResolution } from '@/hooks/useConflictResolution';
+import {
   ArrowLeft, 
   Database, 
   Trash2, 
@@ -25,7 +26,8 @@ import {
   Settings as SettingsIcon,
   Download,
   Shield,
-  Activity
+  Activity,
+  AlertCircle
 } from 'lucide-react';
 
 interface OfflineSettings {
@@ -41,6 +43,7 @@ const Settings = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isOnline, pendingCount, triggerSync } = useLocalSync();
+  const { conflictCount } = useConflictResolution();
   
   const [settings, setSettings] = useState<OfflineSettings>({
     autoSync: true,
@@ -426,6 +429,17 @@ const Settings = () => {
               <Separator />
 
               <div className="space-y-3">
+                {conflictCount > 0 && (
+                  <Button 
+                    onClick={() => navigate('/conflicts')}
+                    variant="destructive"
+                    className="w-full"
+                  >
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    Resolve {conflictCount} Conflict{conflictCount > 1 ? 's' : ''}
+                  </Button>
+                )}
+
                 <Button 
                   onClick={() => navigate('/diagnostics')}
                   variant="outline"
