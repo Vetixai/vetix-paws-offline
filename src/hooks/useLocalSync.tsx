@@ -241,6 +241,7 @@ export const useLocalSync = () => {
     saveDiagnosisLocal,
     getLocalDiagnoses,
     addToSyncQueue,
-    triggerSync
+    triggerSync,
+    db
   };
 };
