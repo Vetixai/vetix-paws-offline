@@ -1,14 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Camera, Upload, Stethoscope, Loader2, Brain, AlertTriangle, Calendar, CheckCircle2 } from 'lucide-react';
+import { Camera, Upload, Stethoscope, Loader2, Brain, AlertTriangle, Calendar, CheckCircle2, Wifi, WifiOff, Database } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { SpeciesSelector } from './SpeciesSelector';
 import { diagnosisSchema } from '@/lib/validation';
+import { OfflineDiagnostics } from '@/utils/offlineDiagnostics';
+import { DiagnosisCache } from '@/utils/diagnosisCache';
+import { useLocalSync } from '@/hooks/useLocalSync';
 
 interface DiagnosisResult {
   diagnosis: string;
@@ -28,7 +31,15 @@ export const SmartDiagnosis = () => {
   const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisResult | null>(null);
   const [selectedSpecies, setSelectedSpecies] = useState('ng\'ombe');
   const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [diagnosisMode, setDiagnosisMode] = useState<'online' | 'cached' | 'offline'>('online');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isOnline, saveDiagnosisLocal } = useLocalSync();
+
+  useEffect(() => {
+    // Initialize offline systems
+    OfflineDiagnostics.initialize();
+    DiagnosisCache.syncWithServer();
+  }, []);
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -88,6 +99,59 @@ export const SmartDiagnosis = () => {
         setAnalysisProgress(prev => Math.min(prev + 10, 90));
       }, 200);
 
+      // Strategy 1: Check cache first (fastest)
+      const cached = DiagnosisCache.findSimilar(symptoms.trim(), selectedSpecies);
+      if (cached && cached.confidence > 0.75 && !selectedImage) {
+        clearInterval(progressInterval);
+        setAnalysisProgress(100);
+        
+        const result: DiagnosisResult = {
+          diagnosis: `📋 **Cached Analysis** (${Math.round(cached.confidence * 100)}% match)\n\n${cached.diagnosis}`,
+          confidence: cached.confidence,
+          urgencyLevel: 'medium',
+          treatmentPlan: ['Consult veterinarian for current diagnosis', 'Monitor animal condition', 'This is a cached result'],
+          followUpSchedule: [{ task: 'Veterinary consultation', days: 1 }],
+          costEstimate: { min: 500, max: 2000 },
+          preventiveMeasures: ['Connect to internet for fresh analysis']
+        };
+        
+        setDiagnosisResult(result);
+        setDiagnosisMode('cached');
+        toast.success('Quick response from cache');
+        setIsAnalyzing(false);
+        
+        // Try online diagnosis in background if online
+        if (isOnline) {
+          performOnlineDiagnosis(symptoms.trim(), selectedImage, progressInterval, false);
+        }
+        return;
+      }
+
+      // Strategy 2: Try online diagnosis
+      if (isOnline) {
+        await performOnlineDiagnosis(symptoms.trim(), selectedImage, progressInterval, true);
+      } else {
+        // Strategy 3: Offline diagnosis
+        clearInterval(progressInterval);
+        await performOfflineDiagnosis(symptoms.trim());
+      }
+      
+    } catch (error) {
+      console.error('Error analyzing diagnosis:', error);
+      
+      // Fallback to offline on error
+      if (!isOnline || error instanceof Error && error.message.includes('network')) {
+        await performOfflineDiagnosis(symptoms.trim());
+      } else {
+        toast.error('Hitilafu katika uchambuzi / Error during analysis');
+        setAnalysisProgress(0);
+        setIsAnalyzing(false);
+      }
+    }
+  };
+
+  const performOnlineDiagnosis = async (symptomsText: string, image: File | null, progressInterval: any, showResult: boolean) => {
+    try {
       // Get user location for context
       let userLocation = { country: '', region: '' };
       const { data: { user } } = await supabase.auth.getUser();
@@ -105,17 +169,17 @@ export const SmartDiagnosis = () => {
       }
 
       let imageBase64 = null;
-      if (selectedImage) {
-        imageBase64 = await convertImageToBase64(selectedImage);
+      if (image) {
+        imageBase64 = await convertImageToBase64(image);
       }
 
       const { data, error } = await supabase.functions.invoke('smart-diagnosis', {
         body: {
-          symptoms: symptoms.trim(),
+          symptoms: symptomsText,
           imageBase64,
           animalType: selectedSpecies,
           location: userLocation,
-          includeAdvanced: true // Request advanced analysis
+          includeAdvanced: true
         }
       });
 
@@ -147,14 +211,61 @@ export const SmartDiagnosis = () => {
         ]
       };
 
-      setDiagnosisResult(result);
-      toast.success(`🎯 Analysis complete! ${Math.round(result.confidence * 100)}% confidence`);
+      // Cache the result
+      await DiagnosisCache.addToCache(symptomsText, selectedSpecies, result.diagnosis, result.confidence);
+      
+      // Save locally for sync
+      if (user) {
+        await saveDiagnosisLocal({
+          species: selectedSpecies,
+          symptoms: symptomsText,
+          diagnosis: result.diagnosis
+        });
+      }
+
+      if (showResult) {
+        setDiagnosisResult(result);
+        setDiagnosisMode('online');
+        toast.success(`🎯 AI Analysis complete! ${Math.round(result.confidence * 100)}% confidence`);
+        setIsAnalyzing(false);
+      }
       
     } catch (error) {
-      console.error('Error analyzing diagnosis:', error);
-      toast.error('Hitilafu katika uchambuzi / Error during analysis');
-      setAnalysisProgress(0);
-    } finally {
+      if (showResult) throw error;
+      console.error('Background diagnosis failed:', error);
+    }
+  };
+
+  const performOfflineDiagnosis = async (symptomsText: string) => {
+    try {
+      const offlineDiagnosis = await OfflineDiagnostics.diagnose(symptomsText, selectedSpecies);
+      
+      const result: DiagnosisResult = {
+        diagnosis: offlineDiagnosis,
+        confidence: 0.65,
+        urgencyLevel: offlineDiagnosis.includes('EMERGENCY') ? 'critical' : 'medium',
+        treatmentPlan: ['Offline guidance provided', 'Connect to internet for AI analysis', 'Consult veterinarian'],
+        followUpSchedule: [{ task: 'Connect for online diagnosis', days: 1 }],
+        costEstimate: { min: 500, max: 3000 },
+        preventiveMeasures: ['Internet connection needed for full analysis']
+      };
+
+      setDiagnosisResult(result);
+      setDiagnosisMode('offline');
+      setAnalysisProgress(100);
+      
+      // Save locally
+      await saveDiagnosisLocal({
+        species: selectedSpecies,
+        symptoms: symptomsText,
+        diagnosis: offlineDiagnosis
+      });
+      
+      toast.warning('⚠️ Offline mode: Rule-based analysis');
+      setIsAnalyzing(false);
+    } catch (error) {
+      console.error('Offline diagnosis failed:', error);
+      toast.error('Unable to provide diagnosis');
       setIsAnalyzing(false);
     }
   };
@@ -186,10 +297,35 @@ export const SmartDiagnosis = () => {
         <CardTitle className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
           AI Veterinary Diagnosis System
-          <Badge variant="secondary" className="ml-auto">
-            <Stethoscope className="w-3 h-3 mr-1" />
-            Professional Grade
-          </Badge>
+          <div className="ml-auto flex items-center gap-2">
+            {diagnosisMode === 'cached' && (
+              <Badge variant="outline">
+                <Database className="w-3 h-3 mr-1" />
+                Cached
+              </Badge>
+            )}
+            {diagnosisMode === 'offline' && (
+              <Badge variant="destructive">
+                <WifiOff className="w-3 h-3 mr-1" />
+                Offline
+              </Badge>
+            )}
+            {isOnline ? (
+              <Badge variant="secondary">
+                <Wifi className="w-3 h-3 mr-1" />
+                Online
+              </Badge>
+            ) : (
+              <Badge variant="outline">
+                <WifiOff className="w-3 h-3 mr-1" />
+                Offline
+              </Badge>
+            )}
+            <Badge variant="secondary">
+              <Stethoscope className="w-3 h-3 mr-1" />
+              Professional Grade
+            </Badge>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">

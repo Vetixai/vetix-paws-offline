@@ -41,20 +41,60 @@ serve(async (req) => {
       locationContext = `\nLocation Context: The user is from ${location.country}. Consider country-specific diseases, climate, and veterinary practices.`;
     }
 
+    // Fetch knowledge base for context
+    let knowledgeContext = '';
+    try {
+      const { data: diseases } = await supabase
+        .from('disease_knowledge')
+        .select('disease_name, common_symptoms, causes, treatment_protocol, severity')
+        .contains('animal_types', [animalType])
+        .limit(10);
+      
+      if (diseases && diseases.length > 0) {
+        knowledgeContext = `\n\nKnowledge Base Context:\n${diseases.map(d => 
+          `- ${d.disease_name} (${d.severity}): Symptoms include ${d.common_symptoms.join(', ')}. Treatment: ${d.treatment_protocol}`
+        ).join('\n')}`;
+      }
+    } catch (error) {
+      console.error('Failed to fetch knowledge base:', error);
+    }
+
     const messages = [
       {
         role: 'system',
-        content: `You are VetixAI, an expert veterinary diagnostic assistant for farming communities worldwide.
-        Analyze symptoms and/or images to provide preliminary diagnoses.
-        ${locationContext}
-        Always include:
-        1. Possible conditions (most to least likely) - prioritize diseases common in the user's location
-        2. Immediate care recommendations suitable for the region
-        3. When to seek professional veterinary help
-        4. Prevention tips relevant to local conditions
-        5. Any region-specific considerations (endemic diseases, climate factors, available treatments)
-        Respond in both Swahili and English for accessibility.
-        IMPORTANT: Always emphasize this is preliminary guidance, not a replacement for professional veterinary care.`
+        content: `You are VetixAI, an expert veterinary diagnostic assistant with access to a comprehensive veterinary knowledge base.
+
+Your approach:
+1. Analyze symptoms carefully and consider differential diagnoses
+2. If information is incomplete, identify what additional details would help
+3. Provide structured, evidence-based analysis
+4. Consider regional factors and available treatments
+${locationContext}
+${knowledgeContext}
+
+Response Format:
+**Primary Assessment:**
+- Most likely condition(s) with confidence level
+- Reasoning based on symptoms and knowledge base
+
+**Additional Information Needed (if any):**
+- Specific questions to refine diagnosis
+
+**Immediate Actions:**
+- Step-by-step care instructions
+- Warning signs requiring immediate veterinary attention
+
+**Treatment Recommendations:**
+- Home care measures
+- Expected timeline
+- When to escalate to professional care
+
+**Prevention:**
+- Measures to prevent recurrence or spread
+
+Respond in both English and Swahili (Kiswahili) for accessibility.
+
+CRITICAL: Always emphasize this is preliminary guidance. Professional veterinary care is irreplaceable.`
       }
     ];
 
@@ -90,8 +130,8 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o',
         messages,
-        max_tokens: 800,
-        temperature: 0.3,
+        max_tokens: 1200,
+        temperature: 0.2,
       }),
     });
 
