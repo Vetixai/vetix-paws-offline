@@ -1,14 +1,24 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Camera, Upload, Eye, Loader2, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import { Camera, Upload, Eye, Loader2, AlertTriangle, CheckCircle, XCircle, Database } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { pipeline, env } from '@huggingface/transformers';
+import { supabase } from '@/integrations/supabase/client';
 
 // Configure transformers.js for offline use
 env.allowLocalModels = false;
 env.useBrowserCache = true;
 env.backends.onnx.wasm.simd = true;
+
+interface DiseaseBlueprint {
+  disease_name: string;
+  animal_types: string[];
+  common_symptoms: string[];
+  severity: string;
+  treatment_protocol: string;
+  visual_indicators?: string[];
+}
 
 interface PhotoAnalysisProps {
   onAnalysisComplete: (analysis: string) => void;
@@ -20,8 +30,59 @@ export const PhotoAnalysis = ({ onAnalysisComplete }: PhotoAnalysisProps) => {
   const [analysis, setAnalysis] = useState<string>("");
   const [analysisScore, setAnalysisScore] = useState<number>(0);
   const [isModelLoading, setIsModelLoading] = useState(false);
+  const [diseaseBlueprints, setDiseaseBlueprints] = useState<DiseaseBlueprint[]>([]);
+  const [blueprintsLoaded, setBlueprintsLoaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  // Load disease blueprints on component mount
+  useEffect(() => {
+    loadDiseaseBlueprints();
+  }, []);
+
+  const loadDiseaseBlueprints = async () => {
+    try {
+      // Try to load from Supabase
+      const { data, error } = await supabase
+        .from('disease_knowledge')
+        .select('disease_name, animal_types, common_symptoms, severity, treatment_protocol')
+        .order('disease_name');
+
+      if (data && !error) {
+        // Enhance with visual indicators based on symptoms
+        const enhancedBlueprints = data.map(disease => ({
+          ...disease,
+          visual_indicators: extractVisualIndicators(disease.common_symptoms)
+        }));
+        setDiseaseBlueprints(enhancedBlueprints);
+        localStorage.setItem('disease_blueprints', JSON.stringify(enhancedBlueprints));
+        setBlueprintsLoaded(true);
+        console.log(`Loaded ${enhancedBlueprints.length} disease blueprints`);
+      }
+    } catch (error) {
+      console.error('Failed to load disease blueprints:', error);
+      // Fallback to localStorage
+      const cached = localStorage.getItem('disease_blueprints');
+      if (cached) {
+        setDiseaseBlueprints(JSON.parse(cached));
+        setBlueprintsLoaded(true);
+      }
+    }
+  };
+
+  const extractVisualIndicators = (symptoms: string[]): string[] => {
+    const visualKeywords = [
+      'lesion', 'wound', 'swelling', 'redness', 'discharge', 'spots',
+      'rash', 'nodules', 'ulcers', 'abscess', 'tumor', 'growth',
+      'skin', 'hair loss', 'crusty', 'scaly', 'bleeding', 'pus'
+    ];
+    
+    return symptoms.filter(symptom => 
+      visualKeywords.some(keyword => 
+        symptom.toLowerCase().includes(keyword)
+      )
+    );
+  };
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -123,17 +184,27 @@ export const PhotoAnalysis = ({ onAnalysisComplete }: PhotoAnalysisProps) => {
     const topResult = aiResult[0];
     const confidence = Math.round(topResult.score * 100);
     
+    // Match against disease blueprints for enhanced accuracy
+    const matchedDiseases = matchAgainstBlueprints(aiResult);
+    
     // Analyze the image classification results for veterinary insights
-    const condition = interpretVeterinaryCondition(topResult.label, confidence);
+    const condition = interpretVeterinaryCondition(topResult.label, confidence, matchedDiseases);
     const severity = determineSeverity(condition.type, confidence);
     const recommendations = getVeterinaryRecommendations(condition.type, severity);
     
+    const blueprintInfo = matchedDiseases.length > 0 
+      ? `\n🔬 MAGONJWA YANAYOFANANA (Disease Matches):\n${matchedDiseases.slice(0, 3).map(d => 
+          `• ${d.disease_name} (${d.matchScore}% match) - ${d.severity}`
+        ).join('\n')}\n`
+      : '';
+
     const analysisText = `🔍 UCHAMBUZI WA PICHA WA AI
 
 📊 Hali Iliyogunduliwa: ${condition.swahili}
 🎯 Kiwango cha Uhakika: ${confidence}%
 ⚡ Kali: ${severity.swahili}
-
+${blueprintsLoaded ? '✅ Imechambuliwa kwa kutumia database ya magonjwa' : '⚠️ Uchambuzi wa msingi'}
+${blueprintInfo}
 ${getConditionDetails(condition.type)}
 
 🩺 MAPENDEKEZO YA MATIBABU:
@@ -192,7 +263,59 @@ ${recommendations.emergency.map(em => `• ${em}`).join('\n')}
    Daktari wa mifugo ndiye anayeweza kutoa uchunguzi sahihi.`;
   };
 
-  const interpretVeterinaryCondition = (label: string, confidence: number) => {
+  const matchAgainstBlueprints = (aiResults: any[]): Array<DiseaseBlueprint & { matchScore: number }> => {
+    if (diseaseBlueprints.length === 0) return [];
+
+    const matches: Array<DiseaseBlueprint & { matchScore: number }> = [];
+    
+    // Extract keywords from AI classification results
+    const aiKeywords = aiResults.flatMap(result => 
+      result.label.toLowerCase().split(/[\s,_-]+/)
+    );
+
+    diseaseBlueprints.forEach(blueprint => {
+      let matchScore = 0;
+      
+      // Check if visual indicators match AI keywords
+      if (blueprint.visual_indicators) {
+        blueprint.visual_indicators.forEach(indicator => {
+          const indicatorWords = indicator.toLowerCase().split(/[\s,_-]+/);
+          indicatorWords.forEach(word => {
+            if (aiKeywords.some(keyword => keyword.includes(word) || word.includes(keyword))) {
+              matchScore += 15;
+            }
+          });
+        });
+      }
+
+      // Check symptoms against AI keywords
+      blueprint.common_symptoms.forEach(symptom => {
+        const symptomWords = symptom.toLowerCase().split(/[\s,_-]+/);
+        symptomWords.forEach(word => {
+          if (aiKeywords.some(keyword => keyword.includes(word) || word.includes(keyword))) {
+            matchScore += 10;
+          }
+        });
+      });
+
+      if (matchScore > 0) {
+        matches.push({ ...blueprint, matchScore: Math.min(matchScore, 100) });
+      }
+    });
+
+    return matches.sort((a, b) => b.matchScore - a.matchScore);
+  };
+
+  const interpretVeterinaryCondition = (label: string, confidence: number, matchedDiseases: Array<DiseaseBlueprint & { matchScore: number }>) => {
+    // First, check if we have a high-confidence disease match
+    if (matchedDiseases.length > 0 && matchedDiseases[0].matchScore > 50) {
+      const topMatch = matchedDiseases[0];
+      return { 
+        type: topMatch.disease_name.toLowerCase().replace(/\s+/g, '_'),
+        swahili: topMatch.disease_name 
+      };
+    }
+
     // Enhanced condition mapping based on common veterinary issues
     const lowerLabel = label.toLowerCase();
     
@@ -336,9 +459,17 @@ ${recommendations.emergency.map(em => `• ${em}`).join('\n')}
 
   return (
     <Card className="p-6 space-y-4">
-      <div className="flex items-center gap-3">
-        <Camera className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-lg">Uchambuzi wa Picha (Photo Analysis)</h3>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Camera className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold text-lg">Uchambuzi wa Picha (Photo Analysis)</h3>
+        </div>
+        {blueprintsLoaded && (
+          <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+            <Database className="w-4 h-4" />
+            <span>{diseaseBlueprints.length} disease blueprints loaded</span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
