@@ -1,1 +1,16 @@
 project_id = "xodoltxfdrtzsczyvidz"
+
+[functions.smart-diagnosis]
+verify_jwt = false
+
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.generate-image]
+verify_jwt = false
+
+[functions.voice-to-text]
+verify_jwt = false
+
+[functions.populate-medicine-database]
+verify_jwt = false
