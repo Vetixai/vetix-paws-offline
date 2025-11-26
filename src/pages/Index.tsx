@@ -28,6 +28,7 @@ import RegionalHealthAnalytics from "@/components/RegionalHealthAnalytics";
 import SupplyChainImpactTracker from "@/components/SupplyChainImpactTracker";
 import { FarmerDashboard } from "@/components/FarmerDashboard";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
+import { MedicineDatabase } from "@/components/MedicineDatabase";
 import { KenyanMarketPrices } from "@/components/KenyanMarketPrices";
 import { MpesaPaymentTracker } from "@/components/MpesaPaymentTracker";
 import { KenyanWeatherWidget } from "@/components/KenyanWeatherWidget";
@@ -722,6 +723,7 @@ const IndexContent = () => {
         {currentStep === 'dashboard' && (
           <div className="animate-fade-in-up space-y-6">
             <FarmerDashboard />
+            <MedicineDatabase />
             <KnowledgeBase />
             <div className="flex justify-center mt-6">
               <Button variant="outline" onClick={() => setCurrentStep('welcome')}>
