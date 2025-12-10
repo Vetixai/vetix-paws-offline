@@ -2,123 +2,153 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Vetix AI Design System
+   A professional veterinary theme with earthy, trustworthy tones
+   All colors are HSL for consistency
 */
 
 @layer base {
-:root {
-    --background: 0 0% 100%;
-    --foreground: 210 15% 20%;
+  :root {
+    --background: 40 30% 98%;
+    --foreground: 220 20% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 15% 20%;
+    --card-foreground: 220 20% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 15% 20%;
+    --popover-foreground: 220 20% 18%;
 
-    /* Veterinary blue - professional and trustworthy */
-    --primary: 210 85% 45%;
+    /* Veterinary teal - professional and calming */
+    --primary: 175 65% 38%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 210 85% 65%;
+    --primary-glow: 175 55% 55%;
 
-    /* Medical green - health and nature */
-    --secondary: 150 45% 50%;
+    /* Earth green - nature and health */
+    --secondary: 140 45% 42%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Earth tones for agricultural connection */
-    --muted: 35 20% 95%;
-    --muted-foreground: 210 15% 45%;
+    /* Warm earth tones */
+    --muted: 35 25% 94%;
+    --muted-foreground: 220 15% 45%;
 
-    --accent: 210 85% 92%;
-    --accent-foreground: 210 85% 25%;
+    --accent: 175 50% 92%;
+    --accent-foreground: 175 65% 25%;
 
-    /* Emergency red for urgent cases */
-    --destructive: 0 85% 55%;
+    /* Emergency amber-red */
+    --destructive: 12 85% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Success green for healthy animals */
-    --success: 150 60% 45%;
+    /* Healthy green */
+    --success: 145 60% 40%;
     --success-foreground: 0 0% 100%;
 
-    /* Warning amber for moderate concerns */
-    --warning: 45 85% 55%;
-    --warning-foreground: 0 0% 100%;
+    /* Warning amber */
+    --warning: 42 95% 52%;
+    --warning-foreground: 30 60% 15%;
 
-    --border: 210 25% 88%;
-    --input: 210 25% 96%;
-    --ring: 210 85% 45%;
+    /* Info blue */
+    --info: 205 85% 50%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 35 20% 88%;
+    --input: 35 20% 96%;
+    --ring: 175 65% 38%;
 
     --radius: 0.75rem;
 
-    /* Gradients for veterinary design */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-health: linear-gradient(135deg, hsl(var(--secondary)), hsl(150 60% 70%));
-    --gradient-emergency: linear-gradient(135deg, hsl(var(--destructive)), hsl(0 85% 70%));
-    --gradient-hero: linear-gradient(135deg, hsl(210 85% 45%) 0%, hsl(150 45% 50%) 100%);
+    /* Rich gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(175 65% 38%) 0%, hsl(175 55% 55%) 100%);
+    --gradient-health: linear-gradient(135deg, hsl(140 45% 42%) 0%, hsl(145 60% 55%) 100%);
+    --gradient-emergency: linear-gradient(135deg, hsl(12 85% 52%) 0%, hsl(25 90% 60%) 100%);
+    --gradient-hero: linear-gradient(145deg, hsl(175 65% 38%) 0%, hsl(140 45% 42%) 50%, hsl(175 50% 45%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(40 30% 98%) 0%, hsl(35 25% 95%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(35 25% 98%) 100%);
 
-    /* Shadows for depth */
-    --shadow-soft: 0 4px 12px hsl(var(--primary) / 0.1);
-    --shadow-emergency: 0 4px 20px hsl(var(--destructive) / 0.2);
-    --shadow-success: 0 4px 20px hsl(var(--success) / 0.2);
+    /* Refined shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(175 65% 38% / 0.15);
+    --shadow-medium: 0 8px 30px -8px hsl(220 20% 18% / 0.15);
+    --shadow-emergency: 0 4px 25px -4px hsl(12 85% 52% / 0.3);
+    --shadow-success: 0 4px 25px -4px hsl(145 60% 40% / 0.3);
+    --shadow-glow: 0 0 30px -5px hsl(175 55% 55% / 0.4);
 
-    /* Animation timings */
+    /* Smooth transitions */
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 40 25% 97%;
+    --sidebar-foreground: 220 20% 25%;
+    --sidebar-primary: 175 65% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 175 50% 94%;
+    --sidebar-accent-foreground: 175 65% 25%;
+    --sidebar-border: 35 20% 90%;
+    --sidebar-ring: 175 65% 50%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 220 25% 8%;
+    --foreground: 40 30% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 25% 11%;
+    --card-foreground: 40 30% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 25% 11%;
+    --popover-foreground: 40 30% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 175 55% 50%;
+    --primary-foreground: 220 25% 8%;
+    --primary-glow: 175 55% 65%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 140 40% 45%;
+    --secondary-foreground: 220 25% 8%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 20% 16%;
+    --muted-foreground: 40 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 175 40% 18%;
+    --accent-foreground: 175 55% 70%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 12 70% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --success: 145 55% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 42 80% 55%;
+    --warning-foreground: 30 60% 15%;
+
+    --info: 205 75% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 175 55% 50%;
+
+    /* Dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(175 55% 40%) 0%, hsl(175 55% 55%) 100%);
+    --gradient-health: linear-gradient(135deg, hsl(140 40% 40%) 0%, hsl(145 50% 50%) 100%);
+    --gradient-emergency: linear-gradient(135deg, hsl(12 70% 45%) 0%, hsl(25 80% 55%) 100%);
+    --gradient-hero: linear-gradient(145deg, hsl(175 55% 40%) 0%, hsl(140 40% 40%) 50%, hsl(175 45% 45%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 25% 8%) 0%, hsl(220 25% 11%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220 25% 12%) 0%, hsl(220 25% 10%) 100%);
+
+    /* Dark shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
+    --shadow-medium: 0 8px 30px -8px hsl(0 0% 0% / 0.5);
+    --shadow-emergency: 0 4px 25px -4px hsl(12 70% 50% / 0.4);
+    --shadow-success: 0 4px 25px -4px hsl(145 55% 45% / 0.4);
+    --shadow-glow: 0 0 30px -5px hsl(175 55% 50% / 0.3);
+
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 40 30% 90%;
+    --sidebar-primary: 175 55% 50%;
+    --sidebar-primary-foreground: 220 25% 8%;
+    --sidebar-accent: 175 40% 15%;
+    --sidebar-accent-foreground: 175 55% 70%;
+    --sidebar-border: 220 20% 15%;
+    --sidebar-ring: 175 55% 55%;
   }
 }
 
@@ -127,7 +157,86 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /* Better focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer components {
+  /* Glass effect for cards */
+  .glass {
+    @apply bg-card/80 backdrop-blur-md border border-border/50;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+
+  /* Smooth hover lift */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-medium;
+  }
+
+  /* Interactive card */
+  .card-interactive {
+    @apply transition-all duration-300 hover:shadow-soft hover:border-primary/30 cursor-pointer;
+  }
+
+  /* Pulse dot for status indicators */
+  .pulse-dot {
+    @apply relative;
+  }
+  
+  .pulse-dot::before {
+    content: '';
+    @apply absolute inset-0 rounded-full animate-ping opacity-75;
+    background: inherit;
+  }
+
+  /* Skeleton shimmer */
+  .shimmer {
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted-foreground) / 0.1) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+}
+
+@layer utilities {
+  /* Staggered animation delays */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

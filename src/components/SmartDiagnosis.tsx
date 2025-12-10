@@ -292,26 +292,28 @@ export const SmartDiagnosis = () => {
   };
 
   return (
-    <Card className="max-w-6xl mx-auto bg-gradient-to-br from-primary/5 to-secondary/5">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5 text-primary" />
-          AI Veterinary Diagnosis System
+    <Card className="max-w-6xl mx-auto border-0 shadow-medium bg-gradient-card">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-soft">
+            <Brain className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <span className="text-foreground">AI Veterinary Diagnosis System</span>
           <div className="ml-auto flex items-center gap-2">
             {diagnosisMode === 'cached' && (
-              <Badge variant="outline">
+              <Badge variant="secondary">
                 <Database className="w-3 h-3 mr-1" />
                 Cached
               </Badge>
             )}
             {diagnosisMode === 'offline' && (
-              <Badge variant="destructive">
+              <Badge variant="warning">
                 <WifiOff className="w-3 h-3 mr-1" />
                 Offline
               </Badge>
             )}
             {isOnline ? (
-              <Badge variant="secondary">
+              <Badge variant="success">
                 <Wifi className="w-3 h-3 mr-1" />
                 Online
               </Badge>
@@ -321,7 +323,7 @@ export const SmartDiagnosis = () => {
                 Offline
               </Badge>
             )}
-            <Badge variant="secondary">
+            <Badge variant="default">
               <Stethoscope className="w-3 h-3 mr-1" />
               Professional Grade
             </Badge>
@@ -535,20 +537,22 @@ export const SmartDiagnosis = () => {
                 </Card>
               </div>
             ) : (
-              <div className="h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg flex items-center justify-center">
+              <div className="h-64 border-2 border-dashed border-border rounded-xl flex items-center justify-center bg-muted/30">
                 <div className="text-center text-muted-foreground">
-                  <Brain className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium">Professional AI Analysis</p>
-                  <p className="text-sm">Comprehensive diagnosis results will appear here</p>
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <Brain className="h-8 w-8 text-primary opacity-60" />
+                  </div>
+                  <p className="font-medium text-foreground">Professional AI Analysis</p>
+                  <p className="text-sm mt-1">Comprehensive diagnosis results will appear here</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-sm text-yellow-800">
-            <strong>Muhimu / Important:</strong> Hii ni mshauri wa awali tu. Kwa ugonjwa mkuu, tembelea daktari wa mifugo. / 
+        <div className="bg-warning/10 border border-warning/30 rounded-lg p-4">
+          <p className="text-sm text-foreground">
+            <strong>⚠️ Muhimu / Important:</strong> Hii ni mshauri wa awali tu. Kwa ugonjwa mkuu, tembelea daktari wa mifugo. / 
             This is preliminary guidance only. For serious conditions, consult a professional veterinarian.
           </p>
         </div>

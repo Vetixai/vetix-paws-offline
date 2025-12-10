@@ -238,19 +238,20 @@ const IndexContent = () => {
   ];
 
   const renderWelcomeScreen = () => (
-    <div className="space-y-12 animate-fade-in-up">
+    <div className="space-y-10">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-3xl">
+      <div className="relative overflow-hidden rounded-2xl shadow-medium animate-fade-in-up">
         <img 
           src={heroImage} 
           alt="Vetix AI in action" 
-          className="w-full h-96 object-cover"
+          className="w-full h-80 md:h-96 object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-secondary/80 flex items-center justify-center">
-          <div className="text-center text-white px-6">
-            <h1 className="text-5xl font-bold mb-4">Vetix AI</h1>
-            <p className="text-xl mb-6">Smart Offline Veterinary Assistant for Remote Communities</p>
-            <Button variant="hero" size="lg" onClick={handleStartDiagnosis}>
+        <div className="absolute inset-0 bg-gradient-hero opacity-90 flex items-center justify-center">
+          <div className="text-center text-primary-foreground px-6 max-w-2xl">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg">Vetix AI</h1>
+            <p className="text-lg md:text-xl mb-6 opacity-95 drop-shadow">Smart Offline Veterinary Assistant for Remote Communities</p>
+            <Button variant="glass" size="lg" onClick={handleStartDiagnosis} className="backdrop-blur-sm">
+              <Stethoscope className="w-5 h-5" />
               Start Health Check
             </Button>
           </div>
@@ -258,56 +259,55 @@ const IndexContent = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
         {features.map((feature, index) => (
           <Card 
             key={index} 
-            className="p-6 bg-background border-border hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+            className={`p-5 hover:shadow-medium hover:border-primary/40 transition-all duration-300 hover:-translate-y-1 cursor-pointer animate-fade-in-up stagger-${index + 1}`}
             onClick={feature.action}
           >
-            <div className="text-blue-600 mb-3">{feature.icon}</div>
-            <h3 className="font-semibold text-lg mb-2 text-blue-600">{feature.title}</h3>
-            <p className="text-muted-foreground text-sm">{feature.description}</p>
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3 text-primary">
+              {feature.icon}
+            </div>
+            <h3 className="font-semibold text-base mb-1.5 text-foreground">{feature.title}</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
           </Card>
         ))}
       </div>
 
       {/* Quick Actions */}
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className="flex flex-wrap justify-center gap-3 animate-fade-in-up">
         <Button 
           variant="default" 
           size="lg" 
           onClick={() => requireAuth(() => setCurrentStep('dashboard'))}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          <LayoutDashboard className="w-4 h-4 mr-2" />
+          <LayoutDashboard className="w-4 h-4" />
           Farm Dashboard
         </Button>
         <Button 
-          variant="outline" 
+          variant="secondary" 
           size="lg" 
           onClick={() => requireAuth(() => setCurrentStep('kenya-tools'))}
-          className="border-success text-success hover:bg-success/10"
         >
-          <MapPin className="w-4 h-4 mr-2" />
+          <MapPin className="w-4 h-4" />
           Kenya Tools
         </Button>
         <Button 
           variant="outline" 
           size="lg" 
           onClick={() => requireAuth(() => setShowAiFeatures(!showAiFeatures))}
-          className="border-primary text-primary hover:bg-primary/10"
         >
-          <Brain className="w-4 h-4 mr-2" />
+          <Brain className="w-4 h-4" />
           {showAiFeatures ? 'Hide' : 'Show'} AI Tools
         </Button>
         <Button 
           variant="outline" 
           size="lg" 
           onClick={() => requireAuth(() => setCurrentStep('outbreak'))}
-          className="border-destructive text-destructive hover:bg-destructive/10"
+          className="text-destructive border-destructive/50 hover:bg-destructive/10"
         >
-          <Activity className="w-4 h-4 mr-2" />
+          <Activity className="w-4 h-4" />
           Disease Tracker
         </Button>
       </div>
@@ -649,30 +649,32 @@ const IndexContent = () => {
       <OfflineIndicator />
       
       {/* Header with Authentication */}
-      <header className="border-b border-border bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-md shadow-sm">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Stethoscope className="h-6 w-6 text-primary" />
-              <span className="font-bold text-lg">Vetix AI</span>
+            <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setCurrentStep('welcome')}>
+              <div className="w-9 h-9 rounded-lg bg-gradient-hero flex items-center justify-center shadow-soft group-hover:shadow-glow transition-shadow duration-300">
+                <Stethoscope className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-lg text-foreground">Vetix AI</span>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {/* Sync Status Button */}
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => setCurrentStep('offline')}
-                className="gap-2"
+                className="gap-1.5"
               >
                 {isOnline ? (
                   <>
-                    <Cloud className="h-4 w-4 text-green-600" />
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     <span className="hidden sm:inline text-xs">Online</span>
                   </>
                 ) : (
                   <>
-                    <Cloud className="h-4 w-4 text-orange-600" />
+                    <div className="w-2 h-2 rounded-full bg-warning" />
                     <span className="hidden sm:inline text-xs">Offline</span>
                   </>
                 )}
@@ -681,29 +683,29 @@ const IndexContent = () => {
               {/* Settings Button */}
               {user && (
                 <Link to="/settings">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
                     <SettingsIcon className="h-4 w-4" />
                   </Button>
                 </Link>
               )}
 
               {loading ? (
-                <div className="h-9 w-20 bg-muted animate-pulse rounded" />
+                <div className="h-9 w-24 bg-muted animate-pulse rounded-lg" />
               ) : user ? (
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline">{user.email}</span>
+                  <div className="hidden sm:flex items-center gap-1.5 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-lg">
+                    <User className="h-3.5 w-3.5" />
+                    <span className="max-w-[120px] truncate">{user.email}</span>
                   </div>
                   <Button variant="outline" size="sm" onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 mr-1" />
-                    Toka
+                    <LogOut className="h-4 w-4" />
+                    <span className="hidden sm:inline">Toka</span>
                   </Button>
                 </div>
               ) : (
                 <Link to="/auth">
-                  <Button variant="outline" size="sm">
-                    <LogIn className="h-4 w-4 mr-1" />
+                  <Button variant="default" size="sm">
+                    <LogIn className="h-4 w-4" />
                     Ingia
                   </Button>
                 </Link>
@@ -750,7 +752,7 @@ const IndexContent = () => {
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/10">
+    <div className="min-h-screen bg-gradient-subtle">
       <IndexContent />
     </div>
   );
